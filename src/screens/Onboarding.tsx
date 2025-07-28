@@ -46,7 +46,7 @@ const registrationSchema = yup
   .required();
 
 export default function Onboarding() {
-  const [screen, setScreen] = useState<"Login" | "Register" | null>(null);
+  const [screen, setScreen] = useState<"Login" | "Register">("Login");
   const [isHidePassword, setIsHidePassword] = useState(false);
   const {
     register,
@@ -140,7 +140,7 @@ export default function Onboarding() {
               </form>
             </div>
           </>
-        ) : screen === "Register" ? (
+        ) : (
           <>
             <div className="w-full max-w-[496px] z-50">
               <Link to={"/"} className="font-semibold text-gray-800 text-2xl">
@@ -231,27 +231,6 @@ export default function Onboarding() {
                   </p>
                 </span>
               </form>
-            </div>
-          </>
-        ) : (
-          <>
-            <h2 className="bg-clip-text text-gray-900 text-center  text-2xl md:text-4xl lg:text-7xl font-sans py-2 md:py-10 relative z-20 font-bold tracking-tight">
-              Check your mutual funds with our{" "}
-              <span className="bg-gradient-to-r from-blue-950 via-orange-400 to-yellow-400 bg-clip-text text-transparent">
-                Stock APP!
-              </span>
-            </h2>
-            <p className="max-w-xl mx-auto text-sm md:text-lg text-neutral-700 dark:text-neutral-400 text-center">
-              A Stock checking application which allows you to keep track on
-              your best performing stocks.
-            </p>
-            <div className="mt-4 z-50">
-              <Button
-                onClick={() => setScreen("Login")}
-                className="bg-gray-800 text-white cursor-pointer hover:bg-gray-900 transition duration-200 ease-in-out shadow-xl/30"
-              >
-                Get Started!
-              </Button>
             </div>
           </>
         )}
