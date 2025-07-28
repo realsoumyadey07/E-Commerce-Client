@@ -5,6 +5,7 @@ import CheckOrder from "@/screens/CheckOrder";
 import Dashboard from "@/screens/Dashboard";
 import Home from "@/screens/Home";
 import Onboarding from "@/screens/Onboarding";
+import SearchScreen from "@/screens/SearchScreen";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 export default function Navigation() {
@@ -15,6 +16,7 @@ export default function Navigation() {
         <Route element={<PublicLayout />} >
           <Route path="/" element={<Home/>} />
           <Route path="/cart" element={<CartScreen/>} />
+          <Route path="/search" element={<SearchScreen/>} />
         </Route>
         <Route element={<AdminLayout />}>
           <Route
