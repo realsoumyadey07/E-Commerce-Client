@@ -6,7 +6,7 @@ import { Input } from "./ui/input";
 export default function PublicDesktopnav() {
   const navigation = useNavigate();
   return (
-    <div className="hidden md:flex items-center justify-between h-[60px] px-4 w-full max-w-7xl mx-auto">
+    <div className="hidden md:flex items-center justify-between h-[60px] px-4 w-full max-w-7xl mx-auto fixed top-0 left-1/2 -translate-x-1/2 bg-white z-50 shadow">
       <Link to="/" className="text-2xl font-bold text-gray-800 cursor-pointer">
         Realestate
       </Link>
