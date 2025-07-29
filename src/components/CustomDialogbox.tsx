@@ -41,12 +41,14 @@ export default function CustomDialogbox({
           <AlertDialogCancel className="bg-green-500 hover:bg-green-600 text-white hover:text-white">
             Cancel
           </AlertDialogCancel>
-          <AlertDialogAction
-            onClick={onClick}
-            className="bg-red-600 hover:bg-red-700"
-          >
-            {extraButton}
-          </AlertDialogAction>
+          {extraButton && onClick && (
+            <AlertDialogAction
+              onClick={onClick}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              {extraButton}
+            </AlertDialogAction>
+          )}
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
