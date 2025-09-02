@@ -4,32 +4,30 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeClosed } from "lucide-react";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import {
+  userLogin,
+  userRegistration,
+  type FormType,
+} from "@/redux/slices/user.slice";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import toast from "react-hot-toast";
 
 const loginSchema = yup
   .object({
     email: yup.string().email("Invalid email!").required("Email is required!"),
-    password: yup
-      .string()
-      .required("Password is required!")
-      .min(6, "Password must be at least 6 characters")
-      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
-      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
-      .matches(/[0-9]/, "Password must contain at least one numeric digit")
-      .matches(
-        /[!@#$%^&*(),.?":{}|<>]/,
-        "Password must contain at least one special character"
-      ),
+    password: yup.string().required("Password is required!"),
   })
   .required();
 
 const registrationSchema = yup
   .object({
-    username: yup
+    name: yup
       .string()
-      .required("Username is required!")
-      .min(4, "Username must be at least 4 characters"),
+      .required("Name is required!")
+      .min(4, "Name must be at least 4 characters"),
     email: yup.string().email("Invalid email!").required("Email is required!"),
     password: yup
       .string()
@@ -48,19 +46,46 @@ const registrationSchema = yup
 export default function Onboarding() {
   const [screen, setScreen] = useState<"Login" | "Register">("Login");
   const [isHidePassword, setIsHidePassword] = useState(false);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { isLoading } = useAppSelector((state) => state.user);
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
+  } = useForm<FormType>({
     resolver: yupResolver(
       screen === "Login" ? loginSchema : registrationSchema
     ),
   });
 
-  const handleLogin = () => {};
-  const handleRegister = () => {};
+  const loginPromise = async (data: FormType) => {
+    const user = await dispatch(userLogin(data)).unwrap();
+    navigate(user?.role === "admin" ? "/admin" : "/");
+  };
+
+  const handleLogin = async (data: FormType) => {
+    toast.promise(loginPromise(data), {
+      loading: "Logging in...",
+      success: <b>User logged in successfully!</b>,
+      error: (err) => <b>{err || "Could not login."}</b>,
+    });
+  };
+
+  const registerPromise = async (data: FormType) => {
+    await dispatch(userRegistration(data)).unwrap();
+    setScreen("Login");
+  };
+
+  const handleRegister = (data: FormType) => {
+    toast.promise(registerPromise(data), {
+      loading: "Registering...",
+      success: <b>User registered successfully!</b>,
+      error: (err) => <b>{err || "Registration faild try again later!."}</b>,
+    });
+  };
+
   return (
     <div className="flex h-screen">
       <section className="w-full lg:w-2/3 flex items-center justify-center h-full flex-col px-4">
@@ -96,11 +121,12 @@ export default function Onboarding() {
                   )}
                 </div>
                 <div className="flex relative flex-col gap-2">
-                  <label htmlFor="email" className="text-gray-400">
+                  <label htmlFor="password" className="text-gray-400">
                     Password
                   </label>
                   <input
-                    type={isHidePassword ? "password" : "text"}
+                    type={isHidePassword ? "text" : "password"}
+
                     className="border border-gray-500 rounded-md py-2 px-3"
                     placeholder={
                       isHidePassword ? "*******" : "Enter your password here..."
@@ -117,14 +143,15 @@ export default function Onboarding() {
                     className="absolute top-11 right-4"
                     onClick={() => setIsHidePassword(!isHidePassword)}
                   >
-                    {isHidePassword && isHidePassword ? <EyeClosed /> : <Eye />}
+                    {isHidePassword ? <EyeClosed /> : <Eye />}
                   </span>
                 </div>
                 <Button
                   type="submit"
                   className="py-2 px-3 bg-gray-700 hover:bg-gray-800 text-white rounded-[5px] font-semibold my-4 z-10"
+                  disabled={isLoading}
                 >
-                  Login
+                  {isLoading ? "Logging in..." : "Login"}
                 </Button>
                 <span>
                   <p
@@ -155,19 +182,19 @@ export default function Onboarding() {
                 className="flex flex-col gap-2"
               >
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="username" className="text-gray-400">
-                    Username
+                  <label htmlFor="name" className="text-gray-400">
+                    Name
                   </label>
                   <input
                     type="text"
                     className="border border-gray-500 rounded-md py-2 px-3"
                     placeholder="Enter your username here..."
                     defaultValue=""
-                    {...register("username")}
+                    {...register("name")}
                   />
-                  {errors?.username?.message && (
+                  {errors?.name?.message && (
                     <span className="text-sm text-red-500">
-                      {errors?.username?.message}
+                      {errors?.name?.message}
                     </span>
                   )}
                 </div>
@@ -189,11 +216,12 @@ export default function Onboarding() {
                   )}
                 </div>
                 <div className="flex relative flex-col gap-2">
-                  <label htmlFor="email" className="text-gray-400">
+                  <label htmlFor="password" className="text-gray-400">
                     Password
                   </label>
                   <input
-                    type={isHidePassword ? "password" : "text"}
+                    type={isHidePassword ? "text" : "password"}
+
                     className="border border-gray-500 rounded-md py-2 px-3"
                     placeholder={
                       isHidePassword ? "*******" : "Enter your password here..."
@@ -210,14 +238,15 @@ export default function Onboarding() {
                     className="absolute top-11 right-4"
                     onClick={() => setIsHidePassword(!isHidePassword)}
                   >
-                    {isHidePassword && isHidePassword ? <EyeClosed /> : <Eye />}
+                    {isHidePassword ? <EyeClosed /> : <Eye />}
                   </span>
                 </div>
                 <Button
                   type="submit"
                   className="py-2 px-3 bg-gray-700 hover:bg-gray-800 text-white rounded-[5px] font-semibold my-4 z-10"
+                  disabled={isLoading}
                 >
-                  Register
+                  {isLoading ? "Registering..." : "Register"}
                 </Button>
                 <span>
                   <p

@@ -4,20 +4,33 @@ import useAdminav from "@/hooks/useAdminav";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CustomDialogbox from "./CustomDialogbox";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import toast from "react-hot-toast";
+import { userLogout } from "@/redux/slices/user.slice";
 
 export default function AdminDesktopnav() {
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
   const navMenu = useAdminav();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleMenuToggle = (index: number) => {
     setOpenMenuIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
-  const handleLogout = ()=> {
+  const logoutPromise = async () => {
+    await dispatch(userLogout()).unwrap();
+    navigate("/authentication");
+  };
+
+  const handleLogout = () => {
     console.log("Handle logout clicked!");
-    
-  }
+    toast.promise(logoutPromise(), {
+      loading: "Logging out...",
+      success: <b>User logged out successfully!</b>,
+      error: (err) => <b>{err || "Could not logout."}</b>,
+    });
+  };
 
   return (
     <div className="hidden md:flex flex-col justify-between shadow-2xl w-[300px] p-3 bg-[#343a40] select-none h-full">
@@ -65,7 +78,12 @@ export default function AdminDesktopnav() {
         </div>
       </main>
       <div>
-        <CustomDialogbox buttonName="Logout" dialogTitle="Do you want to logout?" extraButton="Logout" onClick={handleLogout} />
+        <CustomDialogbox
+          buttonName="Logout"
+          dialogTitle="Do you want to logout?"
+          extraButton="Logout"
+          onClick={handleLogout}
+        />
       </div>
     </div>
   );

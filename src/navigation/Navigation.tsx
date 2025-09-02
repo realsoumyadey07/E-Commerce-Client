@@ -1,5 +1,6 @@
 import AdminLayout from "@/layout/Admin";
 import PublicLayout from "@/layout/Public";
+import AddProduct from "@/screens/AddProduct";
 import CartScreen from "@/screens/CartScreen";
 import CheckOrder from "@/screens/CheckOrder";
 import Dashboard from "@/screens/Dashboard";
@@ -14,18 +15,16 @@ export default function Navigation() {
     <BrowserRouter>
       <Routes>
         <Route path="/authentication" element={<Onboarding />} />
-        <Route element={<PublicLayout />} >
-          <Route path="/" element={<Home/>} />
-          <Route path="/cart" element={<CartScreen/>} />
-          <Route path="/search" element={<SearchScreen/>} />
-          <Route path="/product/:id" element={<ProductDetails/>} />
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/cart" element={<CartScreen />} />
+          <Route path="/search" element={<SearchScreen />} />
+          <Route path="/product/:id" element={<ProductDetails />} />
         </Route>
         <Route element={<AdminLayout />}>
-          <Route
-            path="/admin"
-            element={<Dashboard />}
-          />
-          <Route path="/admin/check-order" element={<CheckOrder/>}/>
+          <Route path="/admin" element={<Dashboard />} />
+          <Route path="/admin/check-order" element={<CheckOrder />} />
+          <Route path="/admin/add-product" element={<AddProduct />} />
         </Route>
       </Routes>
     </BrowserRouter>
