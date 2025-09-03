@@ -21,10 +21,6 @@ export default function useAdminav() {
           href: "/admin/add-product",
         },
         {
-          title: "Edit Product",
-          href: "/admin/edit-product",
-        },
-        {
           title: "Check Product",
           href: "/admin/check-product",
         },

@@ -3,6 +3,7 @@ import PublicLayout from "@/layout/Public";
 import AddProduct from "@/screens/AddProduct";
 import CartScreen from "@/screens/CartScreen";
 import CheckOrder from "@/screens/CheckOrder";
+import CheckProduct from "@/screens/CheckProduct";
 import Dashboard from "@/screens/Dashboard";
 import Home from "@/screens/Home";
 import Onboarding from "@/screens/Onboarding";
@@ -25,6 +26,7 @@ export default function Navigation() {
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/admin/check-order" element={<CheckOrder />} />
           <Route path="/admin/add-product" element={<AddProduct />} />
+          <Route path="/admin/check-product" element={<CheckProduct />} />
         </Route>
       </Routes>
     </BrowserRouter>

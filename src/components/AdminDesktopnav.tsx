@@ -33,7 +33,7 @@ export default function AdminDesktopnav() {
   };
 
   return (
-    <div className="hidden md:flex flex-col justify-between shadow-2xl w-[300px] p-3 bg-[#343a40] select-none h-full">
+    <div className="hidden md:flex flex-col justify-between shadow-2xl w-[300px] p-3 bg-[#343a40] select-none h-screen">
       <main>
         <h1
           className="font-semibold text-gray-200 text-xl mb-4"

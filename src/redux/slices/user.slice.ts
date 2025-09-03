@@ -85,7 +85,7 @@ export const userLogout = createAsyncThunk(
       );
     }
   }
-)
+);
 
 export const userProfile = createAsyncThunk(
   "user/userProfile",
@@ -98,7 +98,7 @@ export const userProfile = createAsyncThunk(
       return thunkAPI.rejectWithValue(err?.response?.data?.message || "Something went wrong while getting user profile")
     }
   }
-)
+);
 
 export const userSlice = createSlice({
   name: "user",
