@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { createCategory } from "@/redux/slices/category.slice";
@@ -8,7 +10,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import * as yup from "yup";
 
-// ✅ Validation for file input
+// ✅ Validation
 const imageValidation = yup
   .mixed<FileList>()
   .required("Image is required")
@@ -33,13 +35,14 @@ const categorySchema = yup.object({
 });
 
 export type CategoryFormType = yup.InferType<typeof categorySchema>;
-
 const imageFields = ["image1", "image2", "image3", "image4"] as const;
 
 export default function AddCategory() {
   const {
     handleSubmit,
     register,
+    reset,
+    // watch,
     formState: { errors },
   } = useForm<CategoryFormType>({
     resolver: yupResolver(categorySchema),
@@ -48,13 +51,18 @@ export default function AddCategory() {
   const { isLoading } = useAppSelector((state) => state.category);
   const dispatch = useAppDispatch();
 
+  const [previews, setPreviews] = useState<{ [key: string]: string | null }>({
+    image1: null,
+    image2: null,
+    image3: null,
+    image4: null,
+  });
+
+  // ✅ Track which image is clicked
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
   const handleCreateCategory = (data: CategoryFormType) => {
-    console.log("data is: ", data);
-
-    // ✅ extract actual File objects
-    const files = imageFields.map((f) => data[f][0]); // <-- FIXED
-
-    // ✅ check duplicates
+    const files = imageFields.map((f) => data[f][0]);
     const uniqueFiles = new Set(files.map((f) => f?.name));
     if (uniqueFiles.size !== files.length) {
       toast.error("You cannot upload the same image twice!");
@@ -67,26 +75,19 @@ export default function AddCategory() {
     files.forEach((file) => {
       if (file) {
         formData.append("category_images", file);
-        console.log("file is: ", file);
       }
     });
 
-    // Debugging
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
-    toast.promise(
-      dispatch(createCategory(formData)),
-      {
+    toast
+      .promise(dispatch(createCategory(formData)), {
         loading: "Creating category...",
         success: <b>Category created successfully!</b>,
         error: (err) => <b>{err || "Could not create category."}</b>,
-      },
-      {
-        position: "bottom-right",
-      }
-    );
+      })
+      .then(() => {
+        reset();
+        setPreviews({ image1: null, image2: null, image3: null, image4: null });
+      });
   };
 
   return (
@@ -141,11 +142,47 @@ export default function AddCategory() {
                     {...register(fieldName, {
                       required: `Image ${idx + 1} is required`,
                     })}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        setPreviews((prev) => ({
+                          ...prev,
+                          [fieldName]: url,
+                        }));
+                      }
+                    }}
                   />
                   {errors?.[fieldName]?.message && (
                     <span className="text-sm text-red-500">
                       {String(errors[fieldName]?.message)}
                     </span>
+                  )}
+
+                  {/* ✅ Preview with modal trigger */}
+                  {previews[fieldName] && (
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <img
+                          src={previews[fieldName] as string}
+                          alt={`Preview ${idx + 1}`}
+                          className="w-24 h-24 object-cover rounded-lg border shadow cursor-pointer hover:opacity-80"
+                          onClick={() => setSelectedImage(previews[fieldName])}
+                        />
+                      </DialogTrigger>
+                      <DialogContent
+                        className="max-w-3xl p-0 bg-transparent shadow-none border-none" // 👈 remove the close button
+                        showCloseButton={false}
+                      >
+                        {selectedImage && (
+                          <img
+                            src={selectedImage}
+                            alt="Full Preview"
+                            className="w-[600px] h-[400px] object-contain rounded-lg"
+                          />
+                        )}
+                      </DialogContent>
+                    </Dialog>
                   )}
                 </div>
               ))}
