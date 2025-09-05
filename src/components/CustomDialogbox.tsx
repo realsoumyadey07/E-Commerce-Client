@@ -9,13 +9,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { type LucideIcon } from "lucide-react";
+import clsx from "clsx";
 
-interface CustomDialogbox {
+interface CustomDialogboxProps {
   buttonName: string;
   dialogTitle: string;
   dialogDescription?: string;
   extraButton?: string;
   onClick?: () => void;
+  Icon?: LucideIcon;
+  buttonClassName?: string; 
 }
 
 export default function CustomDialogbox({
@@ -24,10 +28,18 @@ export default function CustomDialogbox({
   dialogDescription,
   extraButton,
   onClick,
-}: CustomDialogbox) {
+  Icon,
+  buttonClassName, // destructure here
+}: CustomDialogboxProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger className="px-3 py-2 text-white text-sm hover:bg-red-700 rounded-sm font-semibold bg-red-600">
+      <AlertDialogTrigger
+        className={clsx(
+          "flex items-center justify-center gap-2 px-3 py-2 text-white text-sm hover:bg-red-700 rounded-sm font-semibold bg-red-600",
+          buttonClassName 
+        )}
+      >
+        {Icon && <Icon size={18} />}
         {buttonName}
       </AlertDialogTrigger>
       <AlertDialogContent>

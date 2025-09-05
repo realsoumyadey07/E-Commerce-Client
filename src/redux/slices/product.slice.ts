@@ -1,15 +1,17 @@
 import tokenApi from "@/lib/axios/tokenApi";
-// import type { ProductFormType } from "@/screens/AddProduct";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AxiosError } from "axios";
+import type { Category } from "./category.slice";
 
 interface Product {
   _id: string;
   product_name: string;
-  category_id: string;
+  category_id: Category;
   price: number;
   description: string;
-  image: string;
+  quantity: number;
+  product_image: string;
+  image_public_id: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -17,6 +19,7 @@ interface Product {
 interface InitialState {
   productsData: [Product] | null;
   product: Product | null;
+  editedProduct: Product | null;
   isLoading: boolean;
   error: unknown | null;
 }
@@ -24,6 +27,7 @@ interface InitialState {
 const initialState: InitialState = {
   productsData: null,
   product: null,
+  editedProduct: null,
   isLoading: false,
   error: null,
 };
@@ -48,16 +52,104 @@ export const createProduct = createAsyncThunk(
 
 export const getAllProducts = createAsyncThunk(
   "product/getAllProducts",
-  async (_, thunkAPI)=> {
+  async (_, thunkAPI) => {
     try {
       const res = await tokenApi.get("/product/get-all-products");
       return res?.data?.products;
     } catch (error) {
-      const err = error as AxiosError<{message: string}>;
-      return thunkAPI.rejectWithValue(err?.response?.data?.message || "Something went wrong while getting products!");
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while getting products!"
+      );
     }
   }
-)
+);
+
+export const searchProduct = createAsyncThunk(
+  "product/searchProduct",
+  async (searchKey: string, thunkAPI) => {
+    try {
+      const res = await tokenApi.get("/product/search-products", {
+        params: {
+          searchKey,
+        },
+      });
+      return res?.data?.products;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while searching product!"
+      );
+    }
+  }
+);
+
+export const productDetails = createAsyncThunk(
+  "product/productDetails",
+  async (productId: string, thunkAPI) => {
+    try {
+      const res = await tokenApi.get(`/product/product-details/${productId}`);
+      return res?.data?.product;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while searching product!"
+      );
+    }
+  }
+);
+
+interface EditProductArgs {
+  productId: string;
+  formData: FormData;
+}
+
+interface ProductResponse {
+  product: Product; // assuming you have IProduct type
+}
+
+export const editProduct = createAsyncThunk<
+  Product, // return type
+  EditProductArgs, // argument type
+  { rejectValue: string } // error type
+>("product/editProduct", async ({ productId, formData }, thunkAPI) => {
+  try {
+    const res = await tokenApi.patch<ProductResponse>(
+      `/product/edit-product/${productId}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    return res.data.product;
+  } catch (error) {
+    const err = error as AxiosError<{ message: string }>;
+    return thunkAPI.rejectWithValue(
+      err?.response?.data?.message ||
+        "Something went wrong while editing product!"
+    );
+  }
+});
+
+export const deleteProduct = createAsyncThunk(
+  "product/deleteProduct",
+  async (productId: string, thunkAPI) => {
+    try {
+      await tokenApi.delete(`/product/delete-product/${productId}`);
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while editing product!"
+      );
+    }
+  }
+);
 
 export const productSlice = createSlice({
   name: "product",
@@ -77,7 +169,60 @@ export const productSlice = createSlice({
       state.isLoading = false;
     });
     // get products
-    
+    builder.addCase(getAllProducts.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getAllProducts.fulfilled, (state, action) => {
+      state.productsData = action?.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(getAllProducts.rejected, (state, action) => {
+      state.error = action?.payload;
+      state.isLoading = false;
+    });
+    //search products
+    builder.addCase(searchProduct.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(searchProduct.fulfilled, (state, action) => {
+      state.productsData = action?.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(searchProduct.rejected, (state, action) => {
+      state.error = action?.payload;
+      state.isLoading = false;
+    });
+    //product details
+    builder.addCase(productDetails.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+      state.product = null;
+    });
+    builder.addCase(productDetails.fulfilled, (state, action) => {
+      state.product = action?.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(productDetails.rejected, (state, action) => {
+      state.error = action?.payload;
+      state.isLoading = false;
+      state.product = null;
+    });
+    // edit product
+    builder.addCase(editProduct.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+      state.editedProduct = null;
+    });
+    builder.addCase(editProduct.fulfilled, (state, action) => {
+      state.editedProduct = action?.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(editProduct.rejected, (state, action) => {
+      state.error = action?.payload;
+      state.isLoading = false;
+    });
   },
 });
 

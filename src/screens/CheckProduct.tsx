@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -10,19 +10,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const invoices = [
-  { invoice: "INV001", paymentStatus: "Paid", totalAmount: "$250.00", paymentMethod: "Credit Card" },
-  { invoice: "INV002", paymentStatus: "Pending", totalAmount: "$150.00", paymentMethod: "PayPal" },
-  { invoice: "INV003", paymentStatus: "Unpaid", totalAmount: "$350.00", paymentMethod: "Bank Transfer" },
-  { invoice: "INV004", paymentStatus: "Paid", totalAmount: "$450.00", paymentMethod: "Credit Card" },
-  { invoice: "INV005", paymentStatus: "Paid", totalAmount: "$550.00", paymentMethod: "PayPal" },
-  { invoice: "INV006", paymentStatus: "Pending", totalAmount: "$200.00", paymentMethod: "Bank Transfer" },
-  { invoice: "INV007", paymentStatus: "Unpaid", totalAmount: "$300.00", paymentMethod: "Credit Card" },
-];
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { getAllProducts, searchProduct } from "@/redux/slices/product.slice";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useNavigate } from "react-router-dom";
 
 export default function CheckProduct() {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const { productsData } = useAppSelector((state) => state.product);
+
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, [dispatch]);
+
+  // if (isLoading) return null;
 
   return (
     <div className="p-6 w-full">
@@ -31,8 +36,15 @@ export default function CheckProduct() {
         <Input
           type="text"
           placeholder="Search here..."
-          onChange={(e) => setSearchKeyword(e.target.value)}
           value={searchKeyword}
+          onChange={(e) => {
+            setSearchKeyword(e.target.value);
+            if (e.target.value.trim() === "") {
+              dispatch(getAllProducts());
+            } else {
+              dispatch(searchProduct(searchKeyword));
+            }
+          }}
           className="pl-10 w-full"
         />
       </section>
@@ -40,7 +52,9 @@ export default function CheckProduct() {
       <div className="overflow-x-auto rounded-lg shadow pb-2">
         <Table className="min-w-full bg-white">
           <TableCaption className="text-gray-500">
-            A list of your recent invoices.
+            {productsData && productsData.length > 0
+              ? "A list of your recent products."
+              : "No product found"}
           </TableCaption>
           <TableHeader>
             <TableRow className="bg-gray-100">
@@ -52,21 +66,24 @@ export default function CheckProduct() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {invoices.map((invoice) => (
-              <TableRow key={invoice.invoice} className="hover:bg-gray-50">
-                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                <TableCell>{invoice.paymentStatus}</TableCell>
-                <TableCell>{invoice.paymentMethod}</TableCell>
-                <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-              </TableRow>
-            ))}
+            {productsData &&
+              productsData.map((product) => (
+                <TableRow onClick={()=> navigate(`/admin/product-details/${product._id}`)} key={product._id} className="hover:bg-gray-50 cursor-pointer">
+                  <TableCell>
+                    <Avatar>
+                      <AvatarImage src={product?.product_image} />
+                      <AvatarFallback>Icon</AvatarFallback>
+                    </Avatar>
+                  </TableCell>
+                  <TableCell>{product?.product_name}</TableCell>
+                  <TableCell>{product?.quantity}</TableCell>
+                  <TableCell>{product?.category_id?.category_name}</TableCell>
+                  <TableCell className="text-right">
+                    ₹{product?.price?.toLocaleString("en-IN")}
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
-          {/* <TableFooter>
-            <TableRow className="bg-gray-50 font-semibold">
-              <TableCell colSpan={3}>Total</TableCell>
-              <TableCell className="text-right">$2,500.00</TableCell>
-            </TableRow>
-          </TableFooter> */}
         </Table>
       </div>
     </div>

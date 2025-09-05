@@ -1,4 +1,4 @@
-import { IdCardLanyard, ListOrdered, PackageSearch, Store } from "lucide-react";
+import { ChartBarStacked, IdCardLanyard, ListOrdered, PackageSearch, Store } from "lucide-react";
 
 export default function useAdminav() {
   return [
@@ -9,6 +9,20 @@ export default function useAdminav() {
         {
           title: "Check Order",
           href: "/admin/check-order",
+        },
+      ],
+    },
+    {
+      title: "Category Section",
+      icon: <ChartBarStacked />,
+      subMenu: [
+        {
+          title: "Add Category",
+          href: "/admin/add-category",
+        },
+        {
+          title: "Check Category",
+          href: "/admin/check-category",
         },
       ],
     },

@@ -43,7 +43,7 @@ export default function AdminDesktopnav() {
         </h1>
 
         <div>
-          <Button className="w-full bg-blue-600 hover:bg-blue-700 my-2 flex items-center gap-2 cursor-pointer">
+          <Button className="w-full bg-blue-600 hover:bg-blue-700 my-2 flex items-center gap-2 cursor-pointer" onClick={()=> navigate("/admin")}>
             <Gauge />
             Dashboard
           </Button>
@@ -77,13 +77,14 @@ export default function AdminDesktopnav() {
             ))}
         </div>
       </main>
-      <div>
+      <div className="flex justify-between items-center">
         <CustomDialogbox
           buttonName="Logout"
           dialogTitle="Do you want to logout?"
           extraButton="Logout"
           onClick={handleLogout}
         />
+        <p className="text-gray-300 hover:underline cursor-pointer text-sm" onClick={()=> navigate("/")}>Products</p>
       </div>
     </div>
   );

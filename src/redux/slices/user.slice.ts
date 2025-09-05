@@ -112,12 +112,12 @@ export const userSlice = createSlice({
       state.error = null;
     });
     builder.addCase(userRegistration.fulfilled, (state, action) => {
-      state.registerUserData = action.payload;
+      state.registerUserData = action?.payload;
       state.isLoading = false;
       state.error = null;
     });
     builder.addCase(userRegistration.rejected, (state, action) => {
-      state.error = action.payload;
+      state.error = action?.payload;
       state.isLoading = false;
     });
     //login
@@ -127,12 +127,12 @@ export const userSlice = createSlice({
       state.error = null;
     });
     builder.addCase(userLogin.fulfilled, (state, action) => {
-      state.loginUserData = action.payload;
+      state.loginUserData = action?.payload;
       state.isLoading = false;
       state.error = null;
     });
     builder.addCase(userLogin.rejected, (state, action) => {
-      state.error = action.payload;
+      state.error = action?.payload;
       state.isLoading = false;
     });
     //profile

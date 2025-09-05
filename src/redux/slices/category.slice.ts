@@ -2,9 +2,10 @@ import tokenApi from "@/lib/axios/tokenApi";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AxiosError } from "axios";
 
-interface Category {
+export interface Category {
     _id: string;
     category_name: string;
+    category_images?: [string]
 }
 
 interface InitialState {
@@ -19,6 +20,21 @@ const initialState: InitialState = {
     error: null
 }
 
+export const createCategory = createAsyncThunk(
+    "category/createCategory", async(formData: FormData, thunkAPI)=> {
+        try {
+            await tokenApi.post("/category/create-category", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+        } catch (error) {
+            const err = error as AxiosError<{message: string}>;
+            return thunkAPI.rejectWithValue(err?.response?.data?.message || "Something went wrong while creating category");
+        }
+    }
+);
+
 export const getAllCategories = createAsyncThunk(
     "category/getAllCategory",
     async (_, thunkAPI)=> {
@@ -27,10 +43,10 @@ export const getAllCategories = createAsyncThunk(
             return res?.data?.categories;
         } catch (error) {
             const err = error as AxiosError<{message: string}>;
-            return thunkAPI.rejectWithValue(err?.response?.data?.message || "Something went wrong while getting all categroies");
+            return thunkAPI.rejectWithValue(err?.response?.data?.message || "Something went wrong while getting all categories");
         }
     }
-)
+);
 
 export const categorySlice = createSlice({
     name: "category",

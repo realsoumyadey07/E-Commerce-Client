@@ -1,11 +1,12 @@
 import { IndianRupee, Star } from "lucide-react";
-import Product from "@/assets/images/neckless.webp";
+// import Product from "@/assets/images/neckless.webp";
 
 interface ProductComponentProps {
   name: string;
   rating: number;
   price: number;
   cirtified: boolean;
+  image: string;
 }
 
 export default function ProductComponent({
@@ -13,11 +14,12 @@ export default function ProductComponent({
   rating = 4.5,
   price = 299999,
   cirtified = true,
+  image
 }: ProductComponentProps) {
   return (
     <div className="w-full h-full rounded-2xl shadow-lg  bg-white hover:shadow-xl transition-shadow duration-300 flex flex-col">
       <img
-        src={Product}
+        src={image}
         alt="product"
         className="w-full h-[150px] object-cover rounded-tl-xl rounded-tr-xl"
       />

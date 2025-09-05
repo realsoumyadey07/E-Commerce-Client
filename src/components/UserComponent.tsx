@@ -8,9 +8,8 @@ import {
 import { Button } from "./ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import CustomDialogbox from "./CustomDialogbox";
-import { useEffect } from "react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
-import { userLogout, userProfile } from "@/redux/slices/user.slice";
+import { userLogout } from "@/redux/slices/user.slice";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import toast from "react-hot-toast";
 
@@ -18,10 +17,6 @@ export default function UserComponent() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { userData, isLoading } = useAppSelector((state) => state.user);
-
-  useEffect(() => {
-    dispatch(userProfile());
-  }, [dispatch]);
 
   const logoutPromise = async () => {
     await dispatch(userLogout()).unwrap();
