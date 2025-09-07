@@ -3,10 +3,12 @@ import PublicLayout from "@/layout/Public";
 import AddCategory from "@/screens/AddCategory";
 import AddProduct from "@/screens/AddProduct";
 import CartScreen from "@/screens/CartScreen";
+import CategoryDetails from "@/screens/CategoryDetails";
 import CheckCategory from "@/screens/CheckCategory";
 import CheckOrder from "@/screens/CheckOrder";
 import CheckProduct from "@/screens/CheckProduct";
 import Dashboard from "@/screens/Dashboard";
+import EditCategory from "@/screens/EditCategory";
 import EditProduct from "@/screens/EditProduct";
 import Home from "@/screens/Home";
 import NotFound from "@/screens/NotFound";
@@ -33,6 +35,8 @@ export default function Navigation() {
           {/* category section */}
           <Route path="/admin/add-category" element={<AddCategory/>} />
           <Route path="/admin/check-category" element={<CheckCategory/>} />
+          <Route path="/admin/category-details/:id" element={<CategoryDetails/>} />
+          <Route path="/admin/edit-category/:id" element={<EditCategory/>} />
           {/* product section */}
           <Route path="/admin/add-product" element={<AddProduct />} />
           <Route path="/admin/check-product" element={<CheckProduct />} />

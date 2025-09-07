@@ -17,7 +17,7 @@ export default function PublicLayout() {
   if (isLoading) return <LoadingComp />;
   
   return (
-    <div className="flex flex-col-reverse md:flex-col w-full h-full">
+    <div className="flex flex-col-reverse md:flex-col w-full h-screen">
       <PublicDesktopnav />
       <PublicMobilenav />
       <main className="flex w-full h-full pt-0 md:pt-[60px]">

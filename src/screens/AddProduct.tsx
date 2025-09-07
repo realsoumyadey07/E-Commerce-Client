@@ -85,9 +85,6 @@ function AddProduct() {
           loading: "Creating product...",
           success: <b>Product created successfully!</b>,
           error: (err) => <b>{err || "Could not create product."}</b>,
-        },
-        {
-          position: "bottom-right",
         }
       )
       .then(() => {

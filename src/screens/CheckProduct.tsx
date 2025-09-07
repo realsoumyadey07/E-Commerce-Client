@@ -27,7 +27,6 @@ export default function CheckProduct() {
     dispatch(getAllProducts());
   }, [dispatch]);
 
-  // if (isLoading) return null;
 
   return (
     <div className="p-6 w-full">

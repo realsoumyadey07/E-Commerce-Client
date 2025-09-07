@@ -53,7 +53,7 @@ export default function ProductDetails() {
   };
 
   return (
-    <div className="container mx-auto h-full flex items-center justify-center">
+    <div className="container mx-auto h-full flex md:items-center justify-center">
       <div className="rounded-2xl overflow-hidden">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
           {/* Product Image */}
@@ -66,7 +66,7 @@ export default function ProductDetails() {
           </div>
 
           {/* Product Details */}
-          <div className="flex flex-col justify-between">
+          <div className="flex flex-col justify-between gap-2">
             <div className="space-y-4">
               <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
                 {product.product_name}
@@ -93,13 +93,11 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            
-
             {/* Admin Actions */}
             {userData && userData.role === "admin" ? (
-              <div className="mt-6 flex gap-2 w-full">
+              <div className="mt-6 flex flex-col md:flex-row gap-2 w-full">
                 <Button
-                  className="flex items-center gap-2 w-1/2 cursor-pointer"
+                  className="flex items-center gap-2 md:w-1/2 w-full cursor-pointer"
                   onClick={() =>
                     navigate(`/admin/edit-product/${product?._id}`)
                   }
@@ -115,23 +113,29 @@ export default function ProductDetails() {
                   extraButton="Delete"
                   onClick={handleDeleteProduct}
                   Icon={Trash2}
-                  buttonClassName="flex items-center gap-2 w-1/2"
+                  buttonClassName="flex items-center gap-2 w-full md:w-1/2"
                 />
               </div>
             ) : null}
 
             {/* User Actions */}
-            <div className="flex flex-col gap-2 w-full">
-              {userData && userData.role === "user" && (
-                <CustomDialogbox
-                  buttonName="Cart"
-                  dialogTitle="Cart product"
-                  dialogDescription="Do you want to cart this product"
-                  Icon={ShoppingCart}
-                />
+            <div className="flex flex-col gap-2 w-full md:items-center md:justify-between">
+              {/* Left actions */}
+              {userData?.role !== "admin" && (
+                <div className="flex flex-col md:flex-row md:gap-2 w-full">
+                  <CustomDialogbox
+                    buttonName="Cart"
+                    dialogTitle="Cart product"
+                    dialogDescription="Do you want to cart this product"
+                    Icon={ShoppingCart}
+                    buttonClassName="w-full md:w-1/2 mb-2 md:mb-0"
+                  />
+                  <Button className="w-full md:w-1/2">Buy now</Button>
+                </div>
               )}
 
-              <Button className="flex items-center gap-2 w-full">
+              {/* Share button */}
+              <Button className="flex items-center gap-2 w-full mt-2 md:mt-0">
                 <Share2 className="w-4 h-4" />
                 <span>Share</span>
               </Button>
