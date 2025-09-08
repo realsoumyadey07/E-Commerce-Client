@@ -4,7 +4,7 @@ interface StoreName {
   title?: string;
 }
 
-export default function StoreName({ title = "Realestate" }: StoreName) {
+export default function StoreName({ title = "Bijoy Jewellers " }: StoreName) {
   return (
     <Link
       to="/"

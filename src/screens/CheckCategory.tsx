@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -18,6 +18,8 @@ import {
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AdvancedImage } from "@cloudinary/react";
+import { createOptimizedImage } from "@/lib/cloudinary"; 
 
 export default function CheckCategory() {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
@@ -30,10 +32,9 @@ export default function CheckCategory() {
     dispatch(getAllCategories());
   }, [dispatch]);
 
-  //   if (isLoading) return <LoadingComp />;
-
   return (
     <div className="p-6 w-full">
+      {/* Search Bar */}
       <section className="w-full md:w-1/3 flex items-center relative mb-6">
         <Search className="absolute left-3 text-gray-400" size={20} />
         <Input
@@ -52,6 +53,7 @@ export default function CheckCategory() {
         />
       </section>
 
+      {/* Table */}
       <div className="overflow-x-auto rounded-lg shadow pb-2">
         <Table className="min-w-full bg-white">
           <TableCaption className="text-gray-500">
@@ -78,16 +80,24 @@ export default function CheckCategory() {
                   key={category._id}
                   className="hover:bg-gray-50 cursor-pointer"
                 >
+                  {/* Category Name */}
                   <TableCell>{category?.category_name}</TableCell>
-                  {category?.category_images &&
-                    category?.category_images.map((i) => (
-                      <TableCell>
+
+                  {/* Images */}
+                  {category?.category_images?.map((img, idx) => {
+                    const optimizedImg = createOptimizedImage(img?.url);
+                    return (
+                      <TableCell key={idx}>
                         <Avatar>
-                          <AvatarImage src={i?.url} />
-                          <AvatarFallback>Icon</AvatarFallback>
+                          <AdvancedImage
+                            cldImg={optimizedImg}
+                            className="object-cover w-12 h-12 rounded-full"
+                          />
+                          <AvatarFallback>I</AvatarFallback>
                         </Avatar>
                       </TableCell>
-                    ))}
+                    );
+                  })}
                 </TableRow>
               ))}
           </TableBody>

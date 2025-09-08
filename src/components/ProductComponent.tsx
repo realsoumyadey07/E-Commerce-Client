@@ -1,8 +1,8 @@
 import { IndianRupee, Star } from "lucide-react";
 import { AdvancedImage } from "@cloudinary/react";
-import { cld } from "@/lib/cloudinary";
-import { fill } from "@cloudinary/url-gen/actions/resize";
-import {  quality } from '@cloudinary/url-gen/actions/delivery';
+import { createOptimizedImage, isCloudinaryUrl } from "@/lib/cloudinary";
+// import { fill } from "@cloudinary/url-gen/actions/resize";
+// import {  quality } from '@cloudinary/url-gen/actions/delivery';
 // import { auto as formatAuto } from '@cloudinary/url-gen/qualifiers/format';
 
 interface ProductComponentProps {
@@ -22,43 +22,42 @@ export default function ProductComponent({
 }: ProductComponentProps) {
   
   // Function to extract public ID from Cloudinary URL
-  const getPublicIdFromUrl = (url: string): string => {
-    if (!url) return '';
+  // const getPublicIdFromUrl = (url: string): string => {
+  //   if (!url) return '';
     
-    try {
-      const urlObj = new URL(url);
-      const pathParts = urlObj.pathname.split('/');
-      const uploadIndex = pathParts.findIndex(part => part === 'upload');
+  //   try {
+  //     const urlObj = new URL(url);
+  //     const pathParts = urlObj.pathname.split('/');
+  //     const uploadIndex = pathParts.findIndex(part => part === 'upload');
       
-      if (uploadIndex !== -1 && pathParts.length > uploadIndex + 2) {
-        return pathParts[uploadIndex + 2].split('.')[0];
-      }
+  //     if (uploadIndex !== -1 && pathParts.length > uploadIndex + 2) {
+  //       return pathParts[uploadIndex + 2].split('.')[0];
+  //     }
       
-      const lastPart = pathParts[pathParts.length - 1];
-      return lastPart.split('.')[0];
-    } catch {
-      const parts = url.split('/');
-      const lastPart = parts[parts.length - 1];
-      return lastPart.split('.')[0];
-    }
-  };
+  //     const lastPart = pathParts[pathParts.length - 1];
+  //     return lastPart.split('.')[0];
+  //   } catch {
+  //     const parts = url.split('/');
+  //     const lastPart = parts[parts.length - 1];
+  //     return lastPart.split('.')[0];
+  //   }
+  // };
 
   // Check if URL is from Cloudinary
-  const isCloudinaryUrl = (url: string): boolean => {
-    return url.includes('cloudinary.com');
-  };
+  // const isCloudinaryUrl = (url: string): boolean => {
+  //   return url.includes('cloudinary.com');
+  // };
 
   // Create optimized Cloudinary image
-  const createOptimizedImage = (imageUrl: string) => {
-    if (isCloudinaryUrl(imageUrl)) {
-      const publicId = getPublicIdFromUrl(imageUrl);
-      return cld.image(publicId)
-        .resize(fill().width(250).height(150)) // Optimized for the container
-        .delivery(quality('auto:good'))
-        // .delivery(formatAuto());
-    }
-    return cld.image('fallback'); // Fallback for non-Cloudinary
-  };
+  // const createOptimizedImage = (imageUrl: string) => {
+  //   if (isCloudinaryUrl(imageUrl)) {
+  //     const publicId = getPublicIdFromUrl(imageUrl);
+  //     return cld.image(publicId)
+  //       .resize(fill().width(250).height(150))
+  //       .delivery(quality('auto:good'))
+  //   }
+  //   return cld.image('fallback');
+  // };
 
   return (
     <div className="w-full h-full rounded-2xl shadow-lg bg-white hover:shadow-xl transition-shadow duration-300 flex flex-col">

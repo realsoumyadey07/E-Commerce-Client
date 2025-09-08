@@ -7,7 +7,7 @@ import {
   Star,
   Share2,
 } from "lucide-react";
-import LoadingComp from "@/components/LoadingComp";
+// import LoadingComp from "@/components/LoadingComp";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { deleteProduct, productDetails } from "@/redux/slices/product.slice";
@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CustomDialogbox from "@/components/CustomDialogbox";
 import toast from "react-hot-toast";
+import ReactLoadingComp from "@/components/ReactLoadingComp";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -27,7 +28,7 @@ export default function ProductDetails() {
     if (id) dispatch(productDetails(id));
   }, [id, dispatch]);
 
-  if (isLoading) return <LoadingComp />;
+  if (isLoading) return <ReactLoadingComp/>;
 
   if (!product) {
     return (

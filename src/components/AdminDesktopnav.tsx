@@ -7,6 +7,7 @@ import CustomDialogbox from "./CustomDialogbox";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import toast from "react-hot-toast";
 import { userLogout } from "@/redux/slices/user.slice";
+import { motion, AnimatePresence } from "framer-motion"; // 👈 add this
 
 export default function AdminDesktopnav() {
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
@@ -24,7 +25,6 @@ export default function AdminDesktopnav() {
   };
 
   const handleLogout = () => {
-    console.log("Handle logout clicked!");
     toast.promise(logoutPromise(), {
       loading: "Logging out...",
       success: <b>User logged out successfully!</b>,
@@ -39,11 +39,14 @@ export default function AdminDesktopnav() {
           className="font-semibold text-gray-200 text-xl mb-4"
           onClick={() => navigate("/admin")}
         >
-          Realestate
+          Bijoy Jewellers
         </h1>
 
         <div>
-          <Button className="w-full bg-blue-600 hover:bg-blue-700 my-2 flex items-center gap-2 cursor-pointer" onClick={()=> navigate("/admin")}>
+          <Button
+            className="w-full bg-blue-600 hover:bg-blue-700 my-2 flex items-center gap-2 cursor-pointer"
+            onClick={() => navigate("/admin")}
+          >
             <Gauge />
             Dashboard
           </Button>
@@ -59,20 +62,29 @@ export default function AdminDesktopnav() {
                   {menuItem.title}
                 </div>
 
-                {openMenuIndex === index && (
-                  <ul className="ml-6">
-                    {menuItem.subMenu.map((subItem, subIndex) => (
-                      <li
-                        key={subIndex}
-                        className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-600 text-gray-200"
-                        onClick={() => navigate(subItem.href)}
-                      >
-                        <CircleSmall color="white" />
-                        <p>{subItem.title}</p>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+                {/* 👇 Animate submenu */}
+                <AnimatePresence>
+                  {openMenuIndex === index && (
+                    <motion.ul
+                      className="ml-6 overflow-hidden"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.1, ease: "easeOut" }}
+                    >
+                      {menuItem.subMenu.map((subItem, subIndex) => (
+                        <li
+                          key={subIndex}
+                          className="flex items-center gap-2 p-2 rounded-md hover:bg-gray-600 text-gray-200"
+                          onClick={() => navigate(subItem.href)}
+                        >
+                          <CircleSmall color="white" />
+                          <p>{subItem.title}</p>
+                        </li>
+                      ))}
+                    </motion.ul>
+                  )}
+                </AnimatePresence>
               </div>
             ))}
         </div>
@@ -84,7 +96,12 @@ export default function AdminDesktopnav() {
           extraButton="Logout"
           onClick={handleLogout}
         />
-        <p className="text-gray-300 hover:underline cursor-pointer text-sm" onClick={()=> navigate("/")}>Products</p>
+        <p
+          className="text-gray-300 hover:underline cursor-pointer text-sm"
+          onClick={() => navigate("/")}
+        >
+          Products
+        </p>
       </div>
     </div>
   );

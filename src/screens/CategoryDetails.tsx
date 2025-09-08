@@ -1,4 +1,4 @@
-import LoadingComp from "@/components/LoadingComp";
+// import LoadingComp from "@/components/LoadingComp";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { getCategoryById } from "@/redux/slices/category.slice";
@@ -15,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import first from "@/assets/images/1.jpg";
+import ReactLoadingComp from "@/components/ReactLoadingComp";
 
 export default function CategoryDetails() {
   const { id } = useParams();
@@ -26,7 +27,7 @@ export default function CategoryDetails() {
     if (id) dispatch(getCategoryById(id));
   }, [id, dispatch]);
 
-  if (isLoading) return <LoadingComp />;
+  if (isLoading) return <ReactLoadingComp />;
 
   if (!category) {
     return <p className="text-center text-gray-500">Category not found</p>;

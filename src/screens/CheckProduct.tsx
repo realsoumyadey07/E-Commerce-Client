@@ -13,8 +13,10 @@ import {
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { getAllProducts, searchProduct } from "@/redux/slices/product.slice";
 import { useAppSelector } from "@/hooks/useAppSelector";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
+import { AdvancedImage } from "@cloudinary/react";
+import { createOptimizedImage } from "@/lib/cloudinary";
 
 export default function CheckProduct() {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
@@ -70,7 +72,8 @@ export default function CheckProduct() {
                 <TableRow onClick={()=> navigate(`/admin/product-details/${product._id}`)} key={product._id} className="hover:bg-gray-50 cursor-pointer">
                   <TableCell>
                     <Avatar>
-                      <AvatarImage src={product?.product_image} />
+                      <AdvancedImage cldImg={createOptimizedImage(product?.product_image)}/>
+                      {/* <AvatarImage src={product?.product_image} /> */}
                       <AvatarFallback>Icon</AvatarFallback>
                     </Avatar>
                   </TableCell>

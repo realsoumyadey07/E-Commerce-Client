@@ -1,16 +1,15 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
 import { ChevronRight, ChevronLeft, CirclePlus } from "lucide-react";
-// import ProductComponent from "@/components/ProductComponent";
 const ProductComponent = lazy(() => import("@/components/ProductComponent"));
 import { Link, useNavigate } from "react-router-dom";
-// import ExploreComponent from "@/components/ExploreComponent";
 const ExploreComponent = lazy(() => import("@/components/ExploreComponent"));
 import { useAppSelector } from "@/hooks/useAppSelector";
-import LoadingComp from "@/components/LoadingComp";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { getAllProducts } from "@/redux/slices/product.slice";
 import { getAllCategories } from "@/redux/slices/category.slice";
 import NoItem from "../assets/images/no-item.png";
+import ReactLoadingComp from "@/components/ReactLoadingComp";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -26,7 +25,7 @@ export default function Home() {
     dispatch(getAllCategories());
   }, [dispatch]);
 
-  if (isLoading) return <LoadingComp />;
+  if (isLoading) return <ReactLoadingComp />;
 
   const scrollRight = () => {
     if (scrollRef.current) {
@@ -53,12 +52,12 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full h-full px-4 py-4 md:py-0 overflow-y-auto no-scrollbar">
-      <Link to="/" className="font-semibold text-xl flex md:hidden">
+    <div className="w-full h-full flex flex-col justify-between py-4 md:py-0 overflow-y-auto no-scrollbar pb-[60px] md:pb-0">
+      <Link to="/" className="font-semibold text-xl flex md:hidden px-4">
         Realestate
       </Link>
 
-      <main className="w-full max-w-7xl mx-auto relative">
+      <main className="w-full max-w-7xl mx-auto relative px-4">
         <h1 className="text-lg md:text-xl font-semibold text-gray-800 my-4">
           Best of us
         </h1>
@@ -175,6 +174,7 @@ export default function Home() {
           ) : null}
         </div>
       </main>
+      <Footer/>
     </div>
   );
 }
