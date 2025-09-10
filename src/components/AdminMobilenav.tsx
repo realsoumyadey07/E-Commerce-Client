@@ -15,7 +15,7 @@ export default function AdminMobilenav() {
 
   return (
     <>
-      <nav className="block md:hidden">
+      <nav className="block lg:hidden">
         <div className="p-4 cursor-pointer" onClick={() => setOpen(true)}>
           <Menu />
         </div>
@@ -33,8 +33,16 @@ export default function AdminMobilenav() {
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex  items-center p-4 border-b border-gray-700">
-          <h1 className="font-bold text-white text-xl">Realestate</h1>
+        <div className="flex items-center p-4 border-b border-gray-700">
+          <h1
+            className="font-bold text-white text-xl"
+            onClick={() => {
+              navigate("/admin");
+              setOpen(false);
+            }}
+          >
+            Realestate
+          </h1>
         </div>
 
         <div className="px-4 space-y-3">

@@ -35,7 +35,7 @@ export default function UserComponent() {
   if (isLoading) return null;
 
   return (
-    <>
+    <div className="cursor-pointer">
       {userData ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -76,11 +76,11 @@ export default function UserComponent() {
       ) : (
         <Button
           variant="outline"
-          className="bg-gray-900 text-white hover:bg-gray-950 hover:text-white"
+          className="bg-white text-black md:bg-gray-900 md:text-white md:hover:bg-gray-950 md:hover:text-white font-semibold"
         >
           <Link to="/authentication">Login</Link>
         </Button>
       )}
-    </>
+    </div>
   );
 }

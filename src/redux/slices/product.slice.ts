@@ -2,6 +2,7 @@ import tokenApi from "@/lib/axios/tokenApi";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AxiosError } from "axios";
 import type { Category } from "./category.slice";
+import openApi from "@/lib/axios/openApi";
 
 interface Product {
   _id: string;
@@ -19,6 +20,7 @@ interface Product {
 interface InitialState {
   productsData: [Product] | null;
   product: Product | null;
+  userSearchedProduts: [Product] | null;
   editedProduct: Product | null;
   isLoading: boolean;
   error: unknown | null;
@@ -27,6 +29,7 @@ interface InitialState {
 const initialState: InitialState = {
   productsData: null,
   product: null,
+  userSearchedProduts: null,
   editedProduct: null,
   isLoading: false,
   error: null,
@@ -81,6 +84,22 @@ export const searchProduct = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         err?.response?.data?.message ||
           "Something went wrong while searching product!"
+      );
+    }
+  }
+);
+
+export const userSearchProducts = createAsyncThunk(
+  "product/userSearchProducts",
+  async (searchKey: string, thunkAPI) => {
+    try {
+      const res = await openApi.get(`/product/search?searchKey=${searchKey}`);
+      return res?.data?.products;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while searching user search products!"
       );
     }
   }
@@ -154,7 +173,11 @@ export const deleteProduct = createAsyncThunk(
 export const productSlice = createSlice({
   name: "product",
   initialState,
-  reducers: {},
+  reducers: {
+    // clearSearchedProducts: (state) => {
+    //   state.userSearchedProduts = null;
+    // },
+  },
   extraReducers: (builder) => {
     // create product
     builder.addCase(createProduct.pending, (state) => {
@@ -223,7 +246,22 @@ export const productSlice = createSlice({
       state.error = action?.payload;
       state.isLoading = false;
     });
+    // user search products
+    builder.addCase(userSearchProducts.pending, (state) => {
+      state.isLoading = true;
+      state.userSearchedProduts = null;
+      state.error = null;
+    });
+    builder.addCase(userSearchProducts.fulfilled, (state, action) => {
+      state.userSearchedProduts = action?.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(userSearchProducts.rejected, (state, action) => {
+      state.error = action?.payload;
+      state.isLoading = false;
+    });
   },
 });
 
 export default productSlice.reducer;
+// export const { clearSearchedProducts } = productSlice.actions;

@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
 import { ChevronRight, ChevronLeft, CirclePlus } from "lucide-react";
 const ProductComponent = lazy(() => import("@/components/ProductComponent"));
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const ExploreComponent = lazy(() => import("@/components/ExploreComponent"));
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
@@ -10,6 +10,7 @@ import { getAllCategories } from "@/redux/slices/category.slice";
 import NoItem from "../assets/images/no-item.png";
 import ReactLoadingComp from "@/components/ReactLoadingComp";
 import Footer from "@/components/Footer";
+import StoreName from "@/components/StoreName";
 
 export default function Home() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -53,11 +54,11 @@ export default function Home() {
 
   return (
     <div className="w-full h-full flex flex-col justify-between py-4 md:py-0 overflow-y-auto no-scrollbar pb-[60px] md:pb-0">
-      <Link to="/" className="font-semibold text-xl flex md:hidden px-4">
-        Realestate
-      </Link>
+      <h1 className="font-semibold text-xl flex md:hidden px-4">
+        <StoreName />
+      </h1>
 
-      <main className="w-full max-w-7xl mx-auto relative px-4">
+      <main className="w-full max-w-7xl mx-auto relative px-4 pb-4">
         <h1 className="text-lg md:text-xl font-semibold text-gray-800 my-4">
           Best of us
         </h1>
@@ -139,16 +140,23 @@ export default function Home() {
                 className="absolute left-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
               >
                 <Suspense fallback={<div>Loading categories...</div>}>
-                <ChevronLeft className="w-6 h-6 text-gray-600" />
+                  <ChevronLeft className="w-6 h-6 text-gray-600" />
                 </Suspense>
               </button>
             ) : null}
 
             <div className="flex gap-4 min-w-max">
               {categories && categories.length > 0 ? (
-                categories.map((i) => <ExploreComponent key={i?._id} category={i} />)
+                categories.map((i) => (
+                  <ExploreComponent key={i?._id} category={i} />
+                ))
               ) : (
                 <div className="w-full flex flex-col items-center justify-center py-10 text-gray-500">
+                  <img
+                    src={NoItem}
+                    alt="no-item"
+                    className="w-32 h-32 object-contain opacity-80"
+                  />
                   <p className="text-lg font-medium">No categories available</p>
                   {userData && userData.role.toString() === "admin" && (
                     <div
@@ -174,7 +182,7 @@ export default function Home() {
           ) : null}
         </div>
       </main>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

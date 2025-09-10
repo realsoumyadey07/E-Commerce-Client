@@ -8,6 +8,7 @@ interface ReactLoadingCompProps {
   text?: string;
 }
 
+
 export default function ReactLoadingComp({
   color = "#000000",
   loading = true,

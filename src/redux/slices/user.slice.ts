@@ -103,7 +103,11 @@ export const userProfile = createAsyncThunk(
 export const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {},
+  reducers: {
+    clearUserData: (state)=> {
+      state.userData = null;
+    }
+  },
   extraReducers: (builder) => {
     //register
     builder.addCase(userRegistration.pending, (state) => {
@@ -129,9 +133,21 @@ export const userSlice = createSlice({
     builder.addCase(userLogin.fulfilled, (state, action) => {
       state.loginUserData = action?.payload;
       state.isLoading = false;
-      state.error = null;
     });
     builder.addCase(userLogin.rejected, (state, action) => {
+      state.error = action?.payload;
+      state.isLoading = false;
+    });
+    //logout
+    builder.addCase(userLogout.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
+    builder.addCase(userLogout.fulfilled, (state) => {
+      state.userData = null;
+      state.isLoading = false;
+    });
+    builder.addCase(userLogout.rejected, (state, action) => {
       state.error = action?.payload;
       state.isLoading = false;
     });
@@ -155,3 +171,4 @@ export const userSlice = createSlice({
 
 
 export default userSlice.reducer;
+export const { clearUserData } = userSlice.actions;
