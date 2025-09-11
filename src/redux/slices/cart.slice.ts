@@ -1,11 +1,12 @@
 import tokenApi from "@/lib/axios/tokenApi";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AxiosError } from "axios";
+import type { Product } from "./product.slice";
 
 export interface Cart {
   _id: string;
   userId: string;
-  productId: string;
+  productId: Product;
   quantity: string;
   createdAt: string;
   updatedAt: string;
@@ -45,6 +46,22 @@ export const addToCart = createAsyncThunk(
   }
 );
 
+export const getAllCarts = createAsyncThunk(
+  "cart/getAllCarts",
+  async (_, thunkAPI)=> {
+    try {
+      const res = await tokenApi.get("/cart/all-carts");
+      return res?.data?.carts;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while fetching all carts"
+      );
+    }
+  }
+)
+
 export const cartSlice = createSlice({
   name: "cart",
   initialState,
@@ -60,6 +77,22 @@ export const cartSlice = createSlice({
     builder.addCase(addToCart.rejected, (state, action)=> {
         state.error = action?.payload;
         state.isLoading = false;
-    })
+    });
+    // get all carts
+    builder.addCase(getAllCarts.pending, (state)=> {
+        state.isLoading = true;
+        state.error = null;
+        state.allCarts = null;
+    });
+    builder.addCase(getAllCarts.fulfilled, (state, action)=> {
+        state.allCarts = action?.payload;
+        state.isLoading = false;
+    });
+    builder.addCase(getAllCarts.rejected, (state, action)=> {
+        state.error = action?.payload;
+        state.isLoading = false;
+    });
   },
 });
+
+export default cartSlice.reducer;

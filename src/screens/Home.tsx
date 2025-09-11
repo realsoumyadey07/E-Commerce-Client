@@ -11,6 +11,13 @@ import NoItem from "../assets/images/no-item.png";
 import ReactLoadingComp from "@/components/ReactLoadingComp";
 import Footer from "@/components/Footer";
 import StoreName from "@/components/StoreName";
+import ImageSlider from "@/components/ImageSlider";
+import first from "@/assets/images/1.jpg";
+import second from "@/assets/images/2.jpg";
+import third from "@/assets/images/3.jpg";
+import CategoryHeader from "@/components/CategoryHeader";
+
+const imageSlids = [first, second, third];
 
 export default function Home() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -57,8 +64,10 @@ export default function Home() {
       <h1 className="font-semibold text-xl flex md:hidden px-4">
         <StoreName />
       </h1>
+      <CategoryHeader/>
 
       <main className="w-full max-w-7xl mx-auto relative px-4 pb-4">
+        {imageSlids && <ImageSlider images={imageSlids} />}
         <h1 className="text-lg md:text-xl font-semibold text-gray-800 my-4">
           Best of us
         </h1>

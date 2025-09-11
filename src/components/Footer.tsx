@@ -1,9 +1,9 @@
-import { QrCode } from "lucide-react";
+import { QrCode, SendHorizontal } from "lucide-react";
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white py-10 px-6 md:px-16 w-full">
+    <footer className="bg-[#ff0000] text-white py-10 px-6 md:px-16 w-full">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
 
         {/* Subscribe Section */}
@@ -11,17 +11,17 @@ export default function Footer() {
           <h3 className="text-xl font-semibold mb-3">Exclusive</h3>
           <p className="mb-3">Subscribe</p>
           <p className="mb-4 text-sm">Get 10% off your first order</p>
-          <form className="flex border border-gray-600 rounded-lg overflow-hidden">
+          <form className="flex border border-white rounded-lg overflow-hidden">
             <input
               type="email"
               placeholder="Enter your email"
-              className="flex-1 px-3 py-2 text-gray-500 outline-none placeholder:text-gray-500 "
+              className="flex-1 items-center px-3 py-2 text-white outline-none placeholder:text-white"
             />
             <button
               type="submit"
-              className="bg-white text-black px-4 py-2 font-medium hover:bg-gray-200 transition"
+              className="bg-white text-black p-2 font-medium hover:bg-gray-200 transition cursor-pointer"
             >
-              →
+              <SendHorizontal color="red" size={20} />
             </button>
           </form>
         </div>
@@ -88,7 +88,7 @@ export default function Footer() {
       </div>
 
       {/* Copyright */}
-      <div className="border-t border-gray-700 text-center mt-10 pt-6 text-sm text-gray-400">
+      <div className="border-t border-white text-center mt-10 pt-6 text-sm text-white">
         © Copyright soumya 2022. All rights reserved
       </div>
     </footer>

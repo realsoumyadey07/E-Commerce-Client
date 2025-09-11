@@ -4,7 +4,7 @@ import type { AxiosError } from "axios";
 import type { Category } from "./category.slice";
 import openApi from "@/lib/axios/openApi";
 
-interface Product {
+export interface Product {
   _id: string;
   product_name: string;
   category_id: Category;

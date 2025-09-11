@@ -1,32 +1,22 @@
-import { ClipLoader } from "react-spinners";
+import { motion } from "framer-motion";
 
-interface ReactLoadingCompProps {
-  color?: string;
-  loading?: boolean;
-  size?: number;
-  speedMultiplier?: number;
-  text?: string;
-}
-
-
-export default function ReactLoadingComp({
-  color = "#000000",
-  loading = true,
-  size = 80,
-  speedMultiplier = 0.5, // slower by default
-  text = "Loading...",   // default text
-}: ReactLoadingCompProps) {
+export default function ReactLoadingComp() {
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full bg-gray-50 space-y-4">
-      <ClipLoader
-        color={color}
-        loading={loading}
-        size={size}
-        speedMultiplier={speedMultiplier}
-        aria-label="Loading Spinner"
-        data-testid="loader"
-      />
-      <p className="text-gray-700 text-lg font-medium">{text}</p>
+    <div className="flex items-center justify-center h-screen w-full bg-white">
+      <motion.h1
+        className="text-3xl font-bold text-red-600"
+        initial={{ opacity: 1 }}
+        animate={{ opacity: [1, 0, 1] }}
+        transition={{
+          duration: .9, // slow appear/disappear cycle
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      >
+        Bijoy Jewellers
+      </motion.h1>
     </div>
   );
 }
+
+

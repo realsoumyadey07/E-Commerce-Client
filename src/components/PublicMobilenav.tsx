@@ -8,7 +8,7 @@ export default function PublicMobilenav() {
     <nav
       className={`${
         location?.pathname?.includes("search") && "hidden"
-      } fixed bottom-0 left-0 w-full h-[60px] bg-black shadow-md flex justify-around items-center md:hidden z-50`}
+      } fixed bottom-0 left-0 w-full h-[60px] bg-[#ff0000] shadow-md flex justify-around items-center md:hidden z-50`}
     >
       <Link
         to="/"

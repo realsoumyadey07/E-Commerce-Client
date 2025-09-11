@@ -17,6 +17,7 @@ import CustomDialogbox from "@/components/CustomDialogbox";
 import toast from "react-hot-toast";
 import ReactLoadingComp from "@/components/ReactLoadingComp";
 import Footer from "@/components/Footer";
+import { addToCart } from "@/redux/slices/cart.slice";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -56,6 +57,21 @@ export default function ProductDetails() {
         .then(() => navigate("/admin/check-product"));
   };
 
+  const cartProductPromise = async () => {
+    if (id && userData?._id)
+      dispatch(addToCart({ userId: userData._id, productId: id }));
+  };
+  const handleCartProduct = () => {
+    if (id && userData?._id)
+      toast
+        .promise(cartProductPromise(), {
+          loading: "Add product to cart...",
+          success: <b>Product added to cart successfully!</b>,
+          error: (err) => <b>{err || "Could not add product to the cart!"}</b>,
+        })
+        .then(() => navigate("/cart"));
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <main className="flex-grow container mx-auto md:my-8 md:py-8">
@@ -90,7 +106,7 @@ export default function ProductDetails() {
                       Certified
                     </span>
                   </div>
-                  {userData && userData.role !== "admin" && (
+                  {userData && userData.role === "user" && (
                     <Heart
                       color={wishListed ? "red" : "gray"}
                       onClick={() => setWishListed(!wishListed)}
@@ -130,16 +146,16 @@ export default function ProductDetails() {
               ) : null}
 
               <div className="flex flex-col gap-2 w-full md:items-center md:justify-between">
-                {userData?.role !== "admin" && (
+                {userData?.role === "user" && (
                   <div className="flex flex-col md:flex-row gap-2 w-full">
                     <Button
-                      className="w-full md:w-1/2 bg-orange-600 hover:bg-orange-700"
-                      onClick={() => navigate("/cart")}
+                      className="flex-1 bg-orange-600 hover:bg-orange-700"
+                      onClick={handleCartProduct}
                     >
                       <ShoppingCart />
                       Cart
                     </Button>
-                    <Button className="w-full md:w-1/2 bg-amber-400 hover:bg-amber-500">
+                    <Button className="flex-1 bg-amber-400 hover:bg-amber-500">
                       Buy now
                     </Button>
                   </div>
