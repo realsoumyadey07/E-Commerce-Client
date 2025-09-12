@@ -8,14 +8,16 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import NoItem from "@/assets/images/no-item.png";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { userSearchProducts } from "@/redux/slices/product.slice";
+import { useState } from "react";
 
 export default function SearchScreen() {
   const navigation = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const searchKey = searchParams.get("searchKey") || "";
+  const [useSearchKey, setUseSearchKey] = useState<string>(searchKey || "");
 
   const dispatch = useAppDispatch();
 
-  const searchKey = searchParams.get("searchKey") || "";
 
   const { userSearchedProduts, isLoading } = useAppSelector(
     (state) => state.product
@@ -40,11 +42,11 @@ export default function SearchScreen() {
         <Input
           type="text"
           placeholder="Search here..."
-          value={searchKey}
+          value={useSearchKey}
           onChange={(e) => {
-            const value = e.target.value;
-            if (value) {
-              setSearchParams({ searchKey: value }, { replace: true });
+            setUseSearchKey(e.target.value);
+            if (e.target.value) {
+              setSearchParams({ searchKey: e.target.value }, { replace: true });
             } else {
               setSearchParams({}, { replace: true });
             }

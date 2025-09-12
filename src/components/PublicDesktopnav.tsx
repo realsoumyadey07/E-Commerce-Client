@@ -5,10 +5,13 @@ import { Input } from "./ui/input";
 import StoreName from "./StoreName";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { userSearchProducts } from "@/redux/slices/product.slice";
+import { useState } from "react";
 
 export default function PublicDesktopnav() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchKey = searchParams.get("searchKey") || "";
+    const [useSearchKey, setUseSearchKey] = useState<string>(searchKey || "");
+
 
   const navigation = useNavigate();
   const dispatch = useAppDispatch();
@@ -30,14 +33,14 @@ export default function PublicDesktopnav() {
               type="text"
               placeholder="Search here..."
               onChange={(e) => {
-                const value = e.target.value;
-                if (value) {
-                  setSearchParams({ searchKey: value }, { replace: true });
+                setUseSearchKey(e.target.value);
+                if (e.target.value) {
+                  setSearchParams({ searchKey: e.target.value }, { replace: true });
                 } else {
                   setSearchParams({}, { replace: true });
                 }
               }}
-              value={searchKey}
+              value={useSearchKey}
               className="w-full"
             />
             <Search

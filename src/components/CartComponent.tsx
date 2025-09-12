@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Minus, Plus, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface CartProductProps {
+  id: string;
   product_name: string;
   price: number;
   product_image: string;
@@ -9,6 +11,7 @@ interface CartProductProps {
 }
 
 export default function CartComponent({
+  id,
   product_name,
   price,
   product_image,
@@ -24,7 +27,7 @@ export default function CartComponent({
 
       <div className="flex flex-col w-full md:flex-row md:justify-between gap-4 md:ml-4">
         <div className="flex flex-col text-center md:text-left">
-          <h2 className="text-base md:text-lg font-semibold">{product_name}</h2>
+          <Link to={`/product/${id}`} className="text-base md:text-lg font-semibold hover:text-blue-700">{product_name}</Link>
           <p className="text-gray-700 font-medium">₹{price}</p>
         </div>
 
