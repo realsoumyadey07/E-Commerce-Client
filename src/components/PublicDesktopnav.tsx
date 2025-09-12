@@ -1,4 +1,4 @@
-import { Heart, Search, ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart } from "lucide-react";
 import UserComponent from "./UserComponent";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Input } from "./ui/input";
@@ -49,7 +49,6 @@ export default function PublicDesktopnav() {
               onClick={handleSearch}
             />
           </div>
-          <Heart size={20} color="red" fill="red" className="cursor-pointer" />
           <ShoppingCart
             onClick={() => navigation("/cart")}
             className="w-6 h-6 cursor-pointer hover:text-black"

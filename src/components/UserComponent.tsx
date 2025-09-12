@@ -1,4 +1,4 @@
-import { Package, User } from "lucide-react";
+import { Heart, Package, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,6 +56,14 @@ export default function UserComponent() {
             <DropdownMenuSeparator />
 
             <div className="flex flex-col justify-between gap-2 px-1">
+              {
+                userData?.role === "user" && (
+                  <Link to="/wishlist" className="flex items-center gap-2 w-full p-2 rounded cursor-pointer">
+                    <Heart />
+                    <p>My Wishlist</p>
+                  </Link>
+                )
+              }
               {
                 userData?.role === "user" && (
                   <Link to="/orders" className="flex items-center gap-2 w-full p-2 rounded cursor-pointer">

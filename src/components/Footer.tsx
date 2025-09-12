@@ -5,8 +5,6 @@ export default function Footer() {
   return (
     <footer className="bg-[#ff0000] text-white py-10 px-6 md:px-16 w-full">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-
-        {/* Subscribe Section */}
         <div>
           <h3 className="text-xl font-semibold mb-3">Exclusive</h3>
           <p className="mb-3">Subscribe</p>
