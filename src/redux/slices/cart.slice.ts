@@ -7,7 +7,7 @@ export interface Cart {
   _id: string;
   userId: string;
   productId: Product;
-  quantity: string;
+  quantity: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -16,6 +16,7 @@ interface InitialState {
   allCarts: Cart[] | null;
   cart: Cart | null;
   isLoading: boolean;
+  isDeleting: boolean;
   error: unknown | null;
 }
 
@@ -23,6 +24,7 @@ const initialState: InitialState = {
   allCarts: null,
   cart: null,
   isLoading: false,
+  isDeleting: false,
   error: null,
 };
 
@@ -60,7 +62,27 @@ export const getAllCarts = createAsyncThunk(
       );
     }
   }
-)
+);
+
+export const deleteFromCart = createAsyncThunk(
+  "cart/deleteFromCart",
+  async (cartId: string, thunkAPI)=> {
+    try {
+      const res = await tokenApi.delete("/cart/delete-cart", {
+        data: {
+          cartId
+        }
+      });
+      return res?.data?.product;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while deleting product from carts"
+      );
+    }
+  }
+);
 
 export const cartSlice = createSlice({
   name: "cart",
@@ -91,6 +113,22 @@ export const cartSlice = createSlice({
     builder.addCase(getAllCarts.rejected, (state, action)=> {
         state.error = action?.payload;
         state.isLoading = false;
+    });
+    // delete product from carts
+    builder.addCase(deleteFromCart.pending, (state)=> {
+        state.isDeleting = true;
+        state.error = null;
+    });
+    builder.addCase(deleteFromCart.fulfilled, (state, action)=> {
+        const deletedCart = action?.payload;
+        if(deletedCart){
+          state.allCarts = state.allCarts?.filter((cart)=> cart?._id !== deletedCart?._id) || null;
+        }
+        state.isDeleting = false;
+    });
+    builder.addCase(deleteFromCart.rejected, (state, action)=> {
+        state.error = action?.payload;
+        state.isDeleting = false;
     });
   },
 });

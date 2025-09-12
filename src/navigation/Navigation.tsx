@@ -13,6 +13,7 @@ import EditProduct from "@/screens/EditProduct";
 import Home from "@/screens/Home";
 import NotFound from "@/screens/NotFound";
 import Onboarding from "@/screens/Onboarding";
+import OrderScreen from "@/screens/OrderScreen";
 import ProductDetails from "@/screens/ProductDetails";
 import SearchScreen from "@/screens/SearchScreen";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -27,6 +28,7 @@ export default function Navigation() {
           <Route path="/cart" element={<CartScreen />} />
           <Route path="/search" element={<SearchScreen />} />
           <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/orders" element={<OrderScreen/>} />
         </Route>
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Dashboard />} />

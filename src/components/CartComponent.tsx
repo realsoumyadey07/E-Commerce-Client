@@ -1,9 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import CustomDialogbox from "./CustomDialogbox";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { deleteFromCart } from "@/redux/slices/cart.slice";
+import toast from "react-hot-toast";
 
 interface CartProductProps {
   id: string;
+  productId: string;
   product_name: string;
   price: number;
   product_image: string;
@@ -12,11 +17,26 @@ interface CartProductProps {
 
 export default function CartComponent({
   id,
+  productId,
   product_name,
   price,
   product_image,
   quantity,
 }: CartProductProps) {
+  const dispatch = useAppDispatch();
+
+  const deleteCartPromise = async () => {
+    if (id) dispatch(deleteFromCart(id));
+  };
+
+  const handleDeleteCart = () => {
+    toast.promise(deleteCartPromise(), {
+      loading: "Removing product...",
+      success: <b>Product removed from cart successfully!</b>,
+      error: (err) => <b>{err || "Could not removed product."}</b>,
+    });
+  };
+
   return (
     <div className="w-full flex flex-col md:flex-row items-center md:items-start md:justify-between gap-4 p-4 border rounded shadow-sm">
       <img
@@ -27,7 +47,12 @@ export default function CartComponent({
 
       <div className="flex flex-col w-full md:flex-row md:justify-between gap-4 md:ml-4">
         <div className="flex flex-col text-center md:text-left">
-          <Link to={`/product/${id}`} className="text-base md:text-lg font-semibold hover:text-blue-700">{product_name}</Link>
+          <Link
+            to={`/product/${productId}`}
+            className="text-base md:text-lg font-semibold hover:text-blue-700"
+          >
+            {product_name}
+          </Link>
           <p className="text-gray-700 font-medium">₹{price}</p>
         </div>
 
@@ -43,16 +68,19 @@ export default function CartComponent({
           </Button>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-center gap-2">
-          <Button variant="ghost" className="w-full md:w-auto rounded">
+        <div className="flex  md:flex-row items-center justify-center gap-2">
+          <Button variant="ghost" className="w-full flex-1 md:w-auto rounded bg-amber-400 hover:bg-amber-500 text-white hover:text-white">
             Save for Later
           </Button>
-          <Button
-            variant="destructive"
-            className="flex items-center justify-center gap-1 w-full md:w-auto rounded"
-          >
-            <Trash2 className="h-4 w-4" /> Remove
-          </Button>
+          <CustomDialogbox
+            buttonName="Remove"
+            dialogTitle="Remove Product"
+            dialogDescription="Do you really want to remove this product?"
+            Icon={Trash2}
+            buttonClassName="flex-1 items-center justify-center gap-1 w-full md:w-auto rounded"
+            extraButton="Remove"
+            onClick={handleDeleteCart}
+          />
         </div>
       </div>
     </div>

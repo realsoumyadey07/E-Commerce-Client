@@ -1,4 +1,4 @@
-import { User } from "lucide-react";
+import { Package, User } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,12 +56,14 @@ export default function UserComponent() {
             <DropdownMenuSeparator />
 
             <div className="flex flex-col justify-between gap-2 px-1">
-              <CustomDialogbox
-                buttonName="Logout"
-                dialogTitle="Do you really want to logout?"
-                extraButton="Logout"
-                onClick={handleLogout}
-              />
+              {
+                userData?.role === "user" && (
+                  <Link to="/orders" className="flex items-center gap-2 w-full p-2 rounded cursor-pointer">
+                    <Package />
+                    <p>My Orders</p>
+                  </Link>
+                )
+              }
               {userData?.role === "admin" && (
                 <Button
                   className="w-full bg-blue-600 text-white hover:bg-blue-700"
@@ -70,6 +72,12 @@ export default function UserComponent() {
                   Admin
                 </Button>
               )}
+              <CustomDialogbox
+                buttonName="Logout"
+                dialogTitle="Do you really want to logout?"
+                extraButton="Logout"
+                onClick={handleLogout}
+              />
             </div>
           </DropdownMenuContent>
         </DropdownMenu>
