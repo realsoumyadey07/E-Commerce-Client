@@ -73,7 +73,7 @@ export default function ProductDetails() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-white">
       <main className="flex-grow container mx-auto md:my-8 md:py-8">
         <div className="rounded-2xl bg-white overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
