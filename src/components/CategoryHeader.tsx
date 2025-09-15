@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export default function CategoryHeader() {
   return (
-    <ul className="hidden md:flex items-center gap-4 my-4 text-red-600 mx-auto">
+    <ul className="hidden md:flex items-center gap-4 my-2 text-red-600 mx-auto">
       <Link to="/" className="hover:underline cursor-pointer font-semibold text-xl">
         Home
       </Link>

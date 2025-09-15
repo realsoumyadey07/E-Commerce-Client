@@ -12,9 +12,9 @@ import ReactLoadingComp from "@/components/ReactLoadingComp";
 import Footer from "@/components/Footer";
 import StoreName from "@/components/StoreName";
 import ImageSlider from "@/components/ImageSlider";
-import first from "@/assets/images/1.jpg";
-import second from "@/assets/images/2.jpg";
-import third from "@/assets/images/3.jpg";
+import first from "@/assets/images/new.jpg";
+import second from "@/assets/images/new1.jpg";
+import third from "@/assets/images/new2.jpg";
 import CategoryHeader from "@/components/CategoryHeader";
 
 const imageSlids = [first, second, third];
@@ -89,7 +89,7 @@ export default function Home() {
                   <div
                     onClick={() => navigation(`/product/${product._id}`)}
                     key={i}
-                    className="min-w-[220px] flex-shrink-0 cursor-pointer"
+                    className="min-w-[220px] flex-shrink-0 cursor-pointer py-4"
                   >
                     <Suspense fallback={<div>Loading products...</div>}>
                       <ProductComponent
