@@ -6,8 +6,7 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import { getAllCarts } from "@/redux/slices/cart.slice";
 import { useEffect, useMemo } from "react";
 import EmptyCart from "@/assets/images/no-item.png";
-import { CirclePlus, ShieldCheck } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MinFooter from "@/components/MinFooter";
 
@@ -41,7 +40,7 @@ export default function CartScreen() {
     <div className="w-full h-full flex flex-col">
       <CategoryHeader />
       {!isLoading ? (
-        <main className="flex-1 w-full bg-gray-50 py-4 md:py-0">
+        <main className="flex-1 w-full bg-white py-4 md:py-0">
           <div className="max-w-7xl mx-auto w-full px-4 flex flex-col lg:flex-row gap-6">
             {/* LEFT: CART ITEMS */}
             <div className="flex-1">
@@ -60,7 +59,7 @@ export default function CartScreen() {
                   ))}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-20 text-center bg-white rounded-lg shadow-sm space-y-1">
+                <div className="flex flex-col items-center justify-center py-20 text-center bg-white rounded-lg space-y-1">
                   <img
                     src={EmptyCart}
                     alt="Empty Cart"
@@ -70,13 +69,6 @@ export default function CartScreen() {
                   <p className="text-gray-600 mt-2">
                     Looks like you haven’t added anything to your cart yet.
                   </p>
-                  <Link
-                    to="/search"
-                    className="text-blue-700 hover:underline flex items-center gap-2"
-                  >
-                    Add products to cart
-                    <CirclePlus />
-                  </Link>
                 </div>
               )}
             </div>

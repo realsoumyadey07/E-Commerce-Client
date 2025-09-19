@@ -76,7 +76,7 @@ export default function ProductDetails() {
     <div className="flex flex-col min-h-screen bg-white">
       <main className="flex-grow container mx-auto md:my-8 md:py-8">
         <div className="rounded-2xl bg-white overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-4">
             <div className="flex justify-center items-center">
               <img
                 src={product.product_image || "/placeholder.png"}
@@ -155,7 +155,7 @@ export default function ProductDetails() {
                       <ShoppingCart />
                       Cart
                     </Button>
-                    <Button className="flex-1 bg-amber-400 hover:bg-amber-500">
+                    <Button onClick={()=> navigate(`/checkout/${product._id}`)} className="flex-1 bg-amber-400 hover:bg-amber-500">
                       Buy now
                     </Button>
                   </div>

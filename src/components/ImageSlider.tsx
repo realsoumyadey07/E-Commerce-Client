@@ -17,7 +17,7 @@ export default function ImageSlider({ images, interval = 6000 }: ImageSliderProp
   }, [images.length, interval]);
 
   return (
-    <div className="relative w-full h-[300px] md:h-[600px] overflow-hidden rounded-lg my-4 md:my-0">
+    <div className="relative w-full h-[250px] md:h-[600px] overflow-hidden md:rounded-lg my-4 md:my-0">
       <AnimatePresence mode="wait">
         <motion.img
           key={current}
