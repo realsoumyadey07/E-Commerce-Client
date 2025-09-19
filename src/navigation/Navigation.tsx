@@ -6,6 +6,7 @@ import CartScreen from "@/screens/CartScreen";
 import CategoryDetails from "@/screens/CategoryDetails";
 import CheckCategory from "@/screens/CheckCategory";
 import CheckOrder from "@/screens/CheckOrder";
+import CheckoutScreen from "@/screens/CheckoutScreen";
 import CheckProduct from "@/screens/CheckProduct";
 import Dashboard from "@/screens/Dashboard";
 import EditCategory from "@/screens/EditCategory";
@@ -29,6 +30,7 @@ export default function Navigation() {
           <Route path="/search" element={<SearchScreen />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/orders" element={<OrderScreen/>} />
+          <Route path="/checkout/:id" element={<CheckoutScreen/>} />
         </Route>
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Dashboard />} />

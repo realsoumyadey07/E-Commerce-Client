@@ -64,131 +64,135 @@ export default function Home() {
       <h1 className="font-semibold text-xl flex md:hidden px-4">
         <StoreName />
       </h1>
-      <CategoryHeader/>
+      <CategoryHeader />
 
-      <main className="w-full max-w-7xl mx-auto relative px-4 pb-4">
+      <main className="w-full max-w-7xl mx-auto relative md:px-4 pb-4">
         {imageSlids && <ImageSlider images={imageSlids} />}
-        <h1 className="text-lg md:text-xl font-semibold text-gray-800 my-4">
-          Best of us
-        </h1>
 
-        <div className="relative">
-          <div ref={scrollRef} className="overflow-x-auto no-scrollbar pr-6">
+        <div className="px-2">
+          <h1 className="text-lg md:text-xl font-semibold text-gray-800 my-4">
+            Best of us
+          </h1>
+          <div className="relative">
+            <div ref={scrollRef} className="overflow-x-auto no-scrollbar pr-6">
+              {productsData && productsData.length > 0 && (
+                <button
+                  onClick={scrollLeft}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
+                >
+                  <ChevronLeft className="w-6 h-6 text-gray-600" />
+                </button>
+              )}
+
+              <div className="flex items-start gap-4">
+                {productsData && productsData.length > 0 ? (
+                  productsData.map((product, i) => (
+                    <div
+                      onClick={() => navigation(`/product/${product._id}`)}
+                      key={i}
+                      className="min-w-[220px] flex-shrink-0 cursor-pointer py-4"
+                    >
+                      <Suspense fallback={<div>Loading products...</div>}>
+                        <ProductComponent
+                          name={product?.product_name}
+                          rating={4.7}
+                          price={product?.price}
+                          cirtified={true}
+                          image={product?.product_image}
+                        />
+                      </Suspense>
+                    </div>
+                  ))
+                ) : (
+                  <div className="w-full flex flex-col items-center justify-center py-10 text-gray-500">
+                    <img
+                      src={NoItem}
+                      alt="no-item"
+                      className="w-32 h-32 object-contain opacity-80"
+                    />
+                    <p className="text-lg font-medium">No items available.</p>
+                    {userData && userData?.role?.toString() === "admin" && (
+                      <div
+                        className="flex items-center gap-2 text-sm md:text-base cursor-pointer hover:underline text-blue-700 transition"
+                        onClick={() => navigation("/admin/add-product")}
+                      >
+                        <p>To add product click here</p>
+                        <CirclePlus className="w-5 h-5" />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
             {productsData && productsData.length > 0 && (
               <button
-                onClick={scrollLeft}
-                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
+                onClick={scrollRight}
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
               >
-                <ChevronLeft className="w-6 h-6 text-gray-600" />
+                <ChevronRight className="w-6 h-6 text-gray-600" />
               </button>
             )}
-
-            <div className="flex items-start gap-4">
-              {productsData && productsData.length > 0 ? (
-                productsData.map((product, i) => (
-                  <div
-                    onClick={() => navigation(`/product/${product._id}`)}
-                    key={i}
-                    className="min-w-[220px] flex-shrink-0 cursor-pointer py-4"
-                  >
-                    <Suspense fallback={<div>Loading products...</div>}>
-                      <ProductComponent
-                        name={product?.product_name}
-                        rating={4.7}
-                        price={product?.price}
-                        cirtified={true}
-                        image={product?.product_image}
-                      />
-                    </Suspense>
-                  </div>
-                ))
-              ) : (
-                <div className="w-full flex flex-col items-center justify-center py-10 text-gray-500">
-                  <img
-                    src={NoItem}
-                    alt="no-item"
-                    className="w-32 h-32 object-contain opacity-80"
-                  />
-                  <p className="text-lg font-medium">No items available.</p>
-                  {userData && userData?.role?.toString() === "admin" && (
-                    <div
-                      className="flex items-center gap-2 text-sm md:text-base cursor-pointer hover:underline text-blue-700 transition"
-                      onClick={() => navigation("/admin/add-product")}
-                    >
-                      <p>To add product click here</p>
-                      <CirclePlus className="w-5 h-5" />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
           </div>
 
-          {productsData && productsData.length > 0 && (
-            <button
-              onClick={scrollRight}
-              className="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
+          <h1 className="text-lg md:text-xl font-semibold text-gray-800 my-4">
+            Explore more like this
+          </h1>
+
+          <div className="relative">
+            <div
+              ref={exploreScrollRef}
+              className="overflow-x-auto no-scrollbar pr-4"
             >
-              <ChevronRight className="w-6 h-6 text-gray-600" />
-            </button>
-          )}
-        </div>
+              {categories && categories.length > 0 ? (
+                <button
+                  onClick={scrollExploreLeft}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
+                >
+                  <Suspense fallback={<div>Loading categories...</div>}>
+                    <ChevronLeft className="w-6 h-6 text-gray-600" />
+                  </Suspense>
+                </button>
+              ) : null}
 
-        <h1 className="text-lg md:text-xl font-semibold text-gray-800 my-4">
-          Explore more like this
-        </h1>
+              <div className="flex gap-4 min-w-max">
+                {categories && categories.length > 0 ? (
+                  categories.map((i) => (
+                    <ExploreComponent key={i?._id} category={i} />
+                  ))
+                ) : (
+                  <div className="w-full flex flex-col items-center justify-center py-10 text-gray-500">
+                    <img
+                      src={NoItem}
+                      alt="no-item"
+                      className="w-32 h-32 object-contain opacity-80"
+                    />
+                    <p className="text-lg font-medium">
+                      No categories available
+                    </p>
+                    {userData && userData.role.toString() === "admin" && (
+                      <div
+                        className="flex items-center gap-2 text-sm md:text-base cursor-pointer hover:underline text-blue-700 transition"
+                        onClick={() => navigation("/admin/add-category")}
+                      >
+                        <p>To add category click here</p>
+                        <CirclePlus className="w-5 h-5" />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
 
-        <div className="relative">
-          <div
-            ref={exploreScrollRef}
-            className="overflow-x-auto no-scrollbar pr-4"
-          >
             {categories && categories.length > 0 ? (
               <button
-                onClick={scrollExploreLeft}
-                className="absolute left-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
+                onClick={scrollExploreRight}
+                className="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
               >
-                <Suspense fallback={<div>Loading categories...</div>}>
-                  <ChevronLeft className="w-6 h-6 text-gray-600" />
-                </Suspense>
+                <ChevronRight className="w-6 h-6 text-gray-600" />
               </button>
             ) : null}
-
-            <div className="flex gap-4 min-w-max">
-              {categories && categories.length > 0 ? (
-                categories.map((i) => (
-                  <ExploreComponent key={i?._id} category={i} />
-                ))
-              ) : (
-                <div className="w-full flex flex-col items-center justify-center py-10 text-gray-500">
-                  <img
-                    src={NoItem}
-                    alt="no-item"
-                    className="w-32 h-32 object-contain opacity-80"
-                  />
-                  <p className="text-lg font-medium">No categories available</p>
-                  {userData && userData.role.toString() === "admin" && (
-                    <div
-                      className="flex items-center gap-2 text-sm md:text-base cursor-pointer hover:underline text-blue-700 transition"
-                      onClick={() => navigation("/admin/add-category")}
-                    >
-                      <p>To add category click here</p>
-                      <CirclePlus className="w-5 h-5" />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
           </div>
-
-          {categories && categories.length > 0 ? (
-            <button
-              onClick={scrollExploreRight}
-              className="absolute right-0 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 transition z-10"
-            >
-              <ChevronRight className="w-6 h-6 text-gray-600" />
-            </button>
-          ) : null}
         </div>
       </main>
       <Footer />
