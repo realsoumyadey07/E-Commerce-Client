@@ -8,7 +8,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createAddress, getMyAddress } from "@/redux/slices/address.slice";
+import {
+  createAddress,
+  getMyAddress,
+  updateAddress,
+} from "@/redux/slices/address.slice";
 import {
   Dialog,
   DialogClose,
@@ -25,6 +29,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { createOrder } from "@/redux/slices/order.slice";
+import CustomDialogbox from "@/components/CustomDialogbox";
 
 const addressSchema = yup.object({
   name: yup.string().required("Name is required!"),
@@ -84,6 +89,8 @@ export default function CheckoutScreen() {
   const totalPrice = price * quantity;
   const totalPayable = totalPrice;
 
+  // update address credentials
+
   const addAddressPromise = async (data: AddressFormData) => {
     dispatch(createAddress(data));
   };
@@ -113,11 +120,34 @@ export default function CheckoutScreen() {
   };
 
   const handleCreateOrder = () => {
-    toast.promise(createOrderPromise(), {
-      loading: "Creating order...",
-      success: <b>Order placed successfully!</b>,
-      error: (err) => <b>{err || "Could not create order."}</b>,
-    }).then(()=> navigation("/orders"));
+    toast
+      .promise(createOrderPromise(), {
+        loading: "Creating order...",
+        success: <b>Order placed successfully!</b>,
+        error: (err) => <b>{err || "Could not create order."}</b>,
+      })
+      .then(() => navigation("/orders"));
+  };
+
+  const changeAddressPromise = async (data: AddressFormData) => {
+    dispatch(
+      updateAddress({
+        addressId: address?._id as string,
+        addressData: data,
+      })
+    );
+  };
+
+  const handleChangeAddress = (data: AddressFormData) => {
+    toast
+      .promise(changeAddressPromise(data), {
+        loading: "Changing address...",
+        success: <b>Address changed successfully!</b>,
+        error: (err) => <b>{err || "Could not change address."}</b>,
+      })
+      .then(() => {
+        dispatch(getMyAddress());
+      });
   };
 
   return (
@@ -147,14 +177,176 @@ export default function CheckoutScreen() {
                     <CardTitle className="text-lg font-semibold">
                       2. DELIVERY ADDRESS
                     </CardTitle>
-                    <Button variant="outline" size="sm">
-                      Change
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="rounded">
+                          Change
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                          <DialogTitle className="text-center">
+                            Change Address
+                          </DialogTitle>
+                          <DialogDescription></DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleSubmit(handleChangeAddress)}>
+                          <div className="grid gap-4 max-h-[50vh] overflow-y-auto pr-2 no-scrollbar">
+                            {/* Name */}
+                            <div className="grid gap-2">
+                              <Label htmlFor="name">Name</Label>
+                              <Input
+                                id="name"
+                                placeholder="Full Name"
+                                defaultValue={address?.name}
+                                {...register("name")}
+                              />
+                            </div>
+
+                            {/* Phone Number */}
+                            <div className="grid gap-2">
+                              <Label htmlFor="phoneNumber">Phone Number</Label>
+                              <Input
+                                id="phoneNumber"
+                                placeholder="10-digit phone number"
+                                defaultValue={address?.phoneNumber}
+                                {...register("phoneNumber")}
+                              />
+                            </div>
+
+                            {/* Pincode */}
+                            <div className="grid gap-2">
+                              <Label htmlFor="pincode">Pincode</Label>
+                              <Input
+                                id="pincode"
+                                placeholder="6-digit Pincode"
+                                defaultValue={address?.pincode}
+                                {...register("pincode")}
+                              />
+                            </div>
+
+                            {/* Locality */}
+                            <div className="grid gap-2">
+                              <Label htmlFor="locality">Locality</Label>
+                              <Input
+                                id="locality"
+                                placeholder="Locality"
+                                defaultValue={address?.locality}
+                                {...register("locality")}
+                              />
+                            </div>
+
+                            {/* Area */}
+                            <div className="grid gap-2">
+                              <Label htmlFor="area">Area</Label>
+                              <Input
+                                id="area"
+                                placeholder="Area/Street"
+                                defaultValue={address?.area}
+                                {...register("area")}
+                              />
+                            </div>
+
+                            {/* City */}
+                            <div className="grid gap-2">
+                              <Label htmlFor="city">City</Label>
+                              <Input
+                                id="city"
+                                placeholder="City"
+                                defaultValue={address?.city}
+                                {...register("city")}
+                              />
+                            </div>
+
+                            {/* District */}
+                            <div className="grid gap-2">
+                              <Label htmlFor="district">District</Label>
+                              <Input
+                                id="district"
+                                placeholder="District"
+                                defaultValue={address?.district}
+                                {...register("district")}
+                              />
+                            </div>
+
+                            {/* State */}
+                            <div className="grid gap-2">
+                              <Label htmlFor="state">State</Label>
+                              <Input
+                                id="state"
+                                placeholder="State"
+                                defaultValue={address?.state}
+                                {...register("state")}
+                              />
+                            </div>
+
+                            {/* Landmark */}
+                            <div className="grid gap-2">
+                              <Label htmlFor="landmark">Landmark</Label>
+                              <Input
+                                id="landmark"
+                                placeholder="Nearby Landmark"
+                                defaultValue={address?.landmark}
+                                {...register("landmark")}
+                              />
+                            </div>
+
+                            {/* Address Type */}
+                            <div className="grid gap-2">
+                              <Label>Address Type</Label>
+                              <div className="flex gap-4">
+                                <label className="flex items-center gap-2">
+                                  <input
+                                    type="radio"
+                                    value="home"
+                                    defaultChecked={
+                                      address?.addressType === "home"
+                                    }
+                                    {...register("addressType")}
+                                  />
+                                  Home
+                                </label>
+                                <label className="flex items-center gap-2">
+                                  <input
+                                    type="radio"
+                                    value="work"
+                                    {...register("addressType")}
+                                    defaultChecked={
+                                      address?.addressType === "work"
+                                    }
+                                  />
+                                  Work
+                                </label>
+                              </div>
+                              {errors.addressType && (
+                                <p className="text-sm text-red-600">
+                                  {String(errors.addressType.message)}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button variant="outline">Cancel</Button>
+                            </DialogClose>
+                            <Button
+                              type="submit"
+                              className="bg-green-500 hover:bg-green-600 rounded"
+                            >
+                              Change Address
+                            </Button>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
                   </CardHeader>
                   <CardContent>
                     <p className="font-medium">{address?.name}</p>
                     <p className="text-sm text-gray-500">
-                      Add your shipping address
+                      {address?.area}, {address?.city} - {address?.pincode}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Phone: {address?.phoneNumber}
                     </p>
                   </CardContent>
                 </Card>
@@ -386,22 +578,19 @@ export default function CheckoutScreen() {
                           <h3 className="font-semibold">
                             {product.product_name}
                           </h3>
-                          <p className="text-sm text-gray-500">
-                            Seller: {"Retailer"}
-                          </p>
                           <div className="flex items-center gap-2 mt-1">
                             <span className="text-lg font-semibold">
                               ₹{price}
                             </span>
 
-                            <>
+                            {/* <>
                               <span className="line-through text-gray-400">
                                 ₹{product.price}
                               </span>
                               <span className="text-green-600 font-medium">
                                 20% off
                               </span>
-                            </>
+                            </> */}
                           </div>
                         </div>
                         <div className="flex flex-col md:flex-row items-center gap-2 mt-2 w-full">
@@ -429,12 +618,17 @@ export default function CheckoutScreen() {
                               +
                             </Button>
                           </div>
-                          <Button
-                            variant="ghost"
-                            className="text-white hover:text-white bg-red-600 hover:bg-red-700 md:w-auto w-full rounded"
-                          >
-                            Remove
-                          </Button>
+                          <CustomDialogbox
+                            buttonName="Remove"
+                            dialogTitle="Remove Product"
+                            dialogDescription="Do you want to remove this product??"
+                            extraButton="Remove Anyway"
+                            onClick={() => {
+                              setQuantity(0);
+                              navigation(-1);
+                            }}
+                            buttonClassName="text-white hover:text-white bg-red-600 hover:bg-red-700 md:w-auto w-full rounded"
+                          />
                         </div>
                       </div>
                     </div>
@@ -551,23 +745,23 @@ export default function CheckoutScreen() {
                 <CardContent className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span>Price (1 item)</span>
-                    <span>₹250</span>
+                    <span>₹{totalPayable}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Payment Handling Fee</span>
-                    <span>₹9</span>
+                    <span>₹00</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Platform Fee</span>
-                    <span>₹7</span>
+                    <span>₹00</span>
                   </div>
                   <div className="flex justify-between font-semibold text-base border-t pt-2">
                     <span>Total Amount</span>
-                    <span>₹266</span>
+                    <span>₹{totalPayable}</span>
                   </div>
 
                   <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-700">
-                    10% instant discount – Claim now with payment offers
+                    0% instant discount – Claim now with payment offers
                   </div>
 
                   <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-gray-700">

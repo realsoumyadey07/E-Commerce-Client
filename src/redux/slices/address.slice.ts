@@ -21,12 +21,14 @@ export interface Address {
 interface AddressState {
   address: Address | null;
   isLoadingAddress: boolean;
+  isUpdatingAddress: boolean;
   error: unknown | null;
 }
 
 const initialState: AddressState = {
   address: null,
   isLoadingAddress: false,
+  isUpdatingAddress: false,
   error: null,
 };
 
@@ -62,6 +64,34 @@ export const getMyAddress = createAsyncThunk(
     }
 );
 
+export const updateAddress = createAsyncThunk(
+  "address/updateAddress",
+  async ({addressId, addressData}:{addressId: string, addressData: AddressFormData}, thunkAPI)=> {
+    try {
+      const res = await tokenApi.patch("/address/update-my-address", {
+        addressId,
+        name: addressData?.name,
+        phoneNumber: addressData?.phoneNumber,
+        pincode: addressData?.pincode,
+        locality: addressData?.pincode,
+        area: addressData?.area,
+        city: addressData?.city,
+        district: addressData?.district,
+        state: addressData?.state,
+        landmark: addressData?.landmark,
+        addressType: addressData?.addressType
+      });
+      return res?.data?.address;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while creating address"
+      );
+    }
+  }
+)
+
 const addressSlice = createSlice({
   name: "address",
   initialState,
@@ -95,6 +125,20 @@ const addressSlice = createSlice({
     builder.addCase(getMyAddress.rejected, (state, action) => {
         state.error = action?.payload as string;
         state.isLoadingAddress = false;
+    });
+    // updateAddress
+    builder.addCase(updateAddress.pending, (state)=> {
+      state.isUpdatingAddress = true;
+      state.address = null;
+      state.error = null; 
+    });
+    builder.addCase(updateAddress.fulfilled, (state, action)=> {
+      state.address = action?.payload;
+      state.isUpdatingAddress = false;
+    });
+    builder.addCase(updateAddress.rejected, (state, action)=> {
+      state.error = action?.payload;
+      state.isUpdatingAddress = false;
     });
   },
 });

@@ -78,10 +78,10 @@ export default function OrderScreen() {
                     <p className="text-yellow-600 text-sm mt-1">● {order.status}</p>
                   )}
 
-                  {/* Actions */}
+                  {/* Actions
                   <button className="text-blue-600 text-sm mt-2">
                     Rate & Review Product
-                  </button>
+                  </button> */}
                 </div>
               </div>
             ))
@@ -91,7 +91,7 @@ export default function OrderScreen() {
         </section>
       </main>
 
-      <MinFooter />
+      <MinFooter/>
     </div>
   );
 }
