@@ -95,7 +95,7 @@ export const userProfile = createAsyncThunk(
       return res?.data?.user;
     } catch (error) {
       const err = error as AxiosError<{message: string}>;
-      return thunkAPI.rejectWithValue(err?.response?.data?.message || "Something went wrong while getting user profile")
+      return thunkAPI.rejectWithValue(err?.response?.data?.message || "Something went wrong while getting user profile");
     }
   }
 );

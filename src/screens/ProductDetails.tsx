@@ -7,32 +7,37 @@ import {
   Star,
   Share2,
   Heart,
+  ChevronLeft,
+  Search,
 } from "lucide-react";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { deleteProduct, productDetails } from "@/redux/slices/product.slice";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import CustomDialogbox from "@/components/CustomDialogbox";
 import toast from "react-hot-toast";
 import ReactLoadingComp from "@/components/ReactLoadingComp";
 import Footer from "@/components/Footer";
 import { addToCart } from "@/redux/slices/cart.slice";
+import { Input } from "@/components/ui/input";
+import { addToWishlist, getAllWishlists } from "@/redux/slices/wishlist.slice";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const location = useLocation();
-  const [wishListed, setWishListed] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { product, isLoading } = useAppSelector((state) => state.product);
   const { userData } = useAppSelector((state) => state.user);
+  const {allWishlists, isLoadingList} = useAppSelector(state=> state.wishlist);
 
   useEffect(() => {
     if (id) dispatch(productDetails(id));
+    dispatch(getAllWishlists());
   }, [id, dispatch]);
 
-  if (isLoading) return <ReactLoadingComp />;
+  if (isLoading || isLoadingList) return <ReactLoadingComp />;
 
   if (!product) {
     return (
@@ -61,6 +66,7 @@ export default function ProductDetails() {
     if (id && userData?._id)
       dispatch(addToCart({ userId: userData._id, productId: id }));
   };
+
   const handleCartProduct = () => {
     if (id && userData?._id)
       toast
@@ -72,20 +78,39 @@ export default function ProductDetails() {
         .then(() => navigate("/cart"));
   };
 
+  const handleAddWishlist = () => {
+    if(id)
+      dispatch(addToWishlist({productId: id}));
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       <main className="flex-grow container mx-auto md:my-8 md:py-8">
-        <div className="rounded-2xl bg-white overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-4">
+        <div className="md:hidden flex items-center w-full p-2 gap-2">
+          <ChevronLeft
+            color="gray"
+            onClick={() => {
+              navigate(-1);
+            }}
+          />
+          <Input
+            placeholder="Search here"
+            onClick={() => navigate("/search")}
+          />
+          <Search color="gray" />
+        </div>
+
+        <div className=" bg-white overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex justify-center items-center">
               <img
                 src={product.product_image || "/placeholder.png"}
                 alt={product.product_name}
-                className="object-cover w-full max-w-md h-80 shadow-md rounded"
+                className="object-cover w-full max-w-md h-60 md:h-80 shadow-md"
               />
             </div>
 
-            <div className="flex flex-col justify-between gap-2">
+            <div className="flex flex-col justify-between gap-2 p-4">
               <div className="space-y-4">
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
                   {product.product_name}
@@ -106,11 +131,11 @@ export default function ProductDetails() {
                       Certified
                     </span>
                   </div>
-                  {userData && userData.role === "user" && (
+                  {userData && product && allWishlists && userData.role === "user" && (
                     <Heart
-                      color={wishListed ? "red" : "gray"}
-                      onClick={() => setWishListed(!wishListed)}
-                      fill={wishListed ? "red" : "#fff"}
+                      color={allWishlists.products?.includes(product?._id) ? "red" : "gray"}
+                      onClick={handleAddWishlist}
+                      fill={allWishlists.products?.includes(product?._id) ? "red" : "#fff"}
                     />
                   )}
                 </div>
@@ -155,7 +180,10 @@ export default function ProductDetails() {
                       <ShoppingCart />
                       Cart
                     </Button>
-                    <Button onClick={()=> navigate(`/checkout/${product._id}`)} className="flex-1 bg-amber-400 hover:bg-amber-500">
+                    <Button
+                      onClick={() => navigate(`/checkout/${product._id}`)}
+                      className="flex-1 bg-amber-400 hover:bg-amber-500"
+                    >
                       Buy now
                     </Button>
                   </div>

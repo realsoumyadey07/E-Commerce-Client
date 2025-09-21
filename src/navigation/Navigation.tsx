@@ -17,6 +17,7 @@ import Onboarding from "@/screens/Onboarding";
 import OrderScreen from "@/screens/OrderScreen";
 import ProductDetails from "@/screens/ProductDetails";
 import SearchScreen from "@/screens/SearchScreen";
+import WishlistScreen from "@/screens/WishlistScreen";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 export default function Navigation() {
@@ -27,6 +28,7 @@ export default function Navigation() {
         <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<CartScreen />} />
+          <Route path="/wishlist" element={<WishlistScreen />} />
           <Route path="/search" element={<SearchScreen />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/orders" element={<OrderScreen/>} />
