@@ -1,6 +1,6 @@
 import AdminDesktopnav from "@/components/AdminDesktopnav";
 import AdminMobilenav from "@/components/AdminMobilenav";
-// import LoadingComp from "@/components/LoadingComp";
+import ReactLoadingComp from "@/components/ReactLoadingComp";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { userProfile } from "@/redux/slices/user.slice";
@@ -16,7 +16,7 @@ export default function AdminLayout() {
     dispatch(userProfile());
   }, [dispatch]);
 
-  // if(isLoading) return <ReactLoadingComp/>
+  if(isLoading) return <ReactLoadingComp />
 
   if (!isLoading && userData && userData?.role !== "admin")
     return <Navigate to="/" replace />;

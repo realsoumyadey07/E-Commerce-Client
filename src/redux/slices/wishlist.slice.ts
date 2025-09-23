@@ -13,6 +13,7 @@ interface WishlistStates {
   allWishlists: Wishlist | null;
   isLoadingList: boolean;
   idAddingToWishlist: boolean;
+  isRemovingFromWishlist: boolean;
   error: unknown | null;
 }
 
@@ -20,6 +21,7 @@ const initialState: WishlistStates = {
   allWishlists: null,
   isLoadingList: false,
   idAddingToWishlist: false,
+  isRemovingFromWishlist: false,
   error: null,
 };
 
@@ -54,6 +56,26 @@ export const getAllWishlists = createAsyncThunk(
   }
 );
 
+export const removeFromWishlist = createAsyncThunk(
+  "wishlist/removeFromWishlist",
+  async ({ productId }: { productId: string }, thunkAPI) => {
+    try {
+      const res = await tokenApi.delete("/wishlist/remove-from-wishlist", {
+        data: {
+          productId,
+        },
+      });
+      return res?.data?.wishlist;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while getting all wishlists"
+      );
+    }
+  }
+);
+
 const wishlistSlice = createSlice({
   name: "wishlist",
   initialState,
@@ -73,15 +95,28 @@ const wishlistSlice = createSlice({
       state.isLoadingList = false;
     });
     // adding to wishlist
-    builder.addCase(addToWishlist.pending, (state)=> {
-        state.idAddingToWishlist = true;
+    builder.addCase(addToWishlist.pending, (state) => {
+      state.idAddingToWishlist = true;
     });
-    builder.addCase(addToWishlist.fulfilled, (state)=> {
-        state.idAddingToWishlist = false;
+    builder.addCase(addToWishlist.fulfilled, (state) => {
+      state.idAddingToWishlist = false;
     });
-    builder.addCase(addToWishlist.rejected, (state, action)=> {
-        state.error = action?.payload;
-        state.idAddingToWishlist = false;
+    builder.addCase(addToWishlist.rejected, (state, action) => {
+      state.error = action?.payload;
+      state.idAddingToWishlist = false;
+    });
+    // removing product from wishlist
+    builder.addCase(removeFromWishlist.pending, (state) => {
+      state.isRemovingFromWishlist = true;
+      state.error = null;
+    });
+    builder.addCase(removeFromWishlist.fulfilled, (state, action) => {
+      state.allWishlists = action?.payload;
+      state.isRemovingFromWishlist = false;
+    });
+    builder.addCase(removeFromWishlist.rejected, (state, action) => {
+      state.error = action?.payload;
+      state.isRemovingFromWishlist = false;
     });
   },
 });
