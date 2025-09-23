@@ -21,7 +21,11 @@ import ReactLoadingComp from "@/components/ReactLoadingComp";
 import Footer from "@/components/Footer";
 import { addToCart } from "@/redux/slices/cart.slice";
 import { Input } from "@/components/ui/input";
-import { addToWishlist, getAllWishlists } from "@/redux/slices/wishlist.slice";
+import {
+  addToWishlist,
+  getAllWishlists,
+  removeFromWishlist,
+} from "@/redux/slices/wishlist.slice";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -30,14 +34,16 @@ export default function ProductDetails() {
   const dispatch = useAppDispatch();
   const { product, isLoading } = useAppSelector((state) => state.product);
   const { userData } = useAppSelector((state) => state.user);
-  const {allWishlists, isLoadingList} = useAppSelector(state=> state.wishlist);
+  const { allWishlists } = useAppSelector(
+    (state) => state.wishlist
+  );
 
   useEffect(() => {
     if (id) dispatch(productDetails(id));
     dispatch(getAllWishlists());
   }, [id, dispatch]);
 
-  if (isLoading || isLoadingList) return <ReactLoadingComp />;
+  if (isLoading) return <ReactLoadingComp />;
 
   if (!product) {
     return (
@@ -78,10 +84,19 @@ export default function ProductDetails() {
         .then(() => navigate("/cart"));
   };
 
-  const handleAddWishlist = () => {
-    if(id)
-      dispatch(addToWishlist({productId: id}));
-  }
+  const handleAddWishlist = async () => {
+    if (allWishlists && id) {
+      if (allWishlists.products?.includes(product?._id)) {
+        await dispatch(removeFromWishlist({ productId: id })).then(() =>
+          dispatch(getAllWishlists())
+        );
+      } else {
+        await dispatch(addToWishlist({ productId: id })).then(() =>
+          dispatch(getAllWishlists())
+        );
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
@@ -131,13 +146,24 @@ export default function ProductDetails() {
                       Certified
                     </span>
                   </div>
-                  {userData && product && allWishlists && userData.role === "user" && (
-                    <Heart
-                      color={allWishlists.products?.includes(product?._id) ? "red" : "gray"}
-                      onClick={handleAddWishlist}
-                      fill={allWishlists.products?.includes(product?._id) ? "red" : "#fff"}
-                    />
-                  )}
+                  {userData &&
+                    product &&
+                    allWishlists &&
+                    userData.role === "user" && (
+                      <Heart
+                        color={
+                          allWishlists.products?.includes(product?._id)
+                            ? "red"
+                            : "gray"
+                        }
+                        onClick={handleAddWishlist}
+                        fill={
+                          allWishlists.products?.includes(product?._id)
+                            ? "red"
+                            : "#fff"
+                        }
+                      />
+                    )}
                 </div>
 
                 <div className="flex items-center gap-1 text-2xl font-semibold text-blue-600">

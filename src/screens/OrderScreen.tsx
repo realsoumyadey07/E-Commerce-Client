@@ -90,7 +90,6 @@ export default function OrderScreen() {
           )}
         </section>
       </main>
-
       <MinFooter/>
     </div>
   );
