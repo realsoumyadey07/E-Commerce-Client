@@ -21,6 +21,7 @@ interface InitialState {
   productsData: [Product] | null;
   product: Product | null;
   userSearchedProduts: [Product] | null;
+  categorySpecificProducts: [Product] | null;
   editedProduct: Product | null;
   isLoading: boolean;
   error: unknown | null;
@@ -30,6 +31,7 @@ const initialState: InitialState = {
   productsData: null,
   product: null,
   userSearchedProduts: null,
+  categorySpecificProducts: null,
   editedProduct: null,
   isLoading: false,
   error: null,
@@ -116,6 +118,22 @@ export const productDetails = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         err?.response?.data?.message ||
           "Something went wrong while searching product!"
+      );
+    }
+  }
+);
+
+export const getAllCategoryProducts = createAsyncThunk(
+  "product/getAllCategoryProducts",
+  async (categoryId: string, thunkAPI)=> {
+    try {
+      const res = await openApi.get(`/product/get-category-products?categoryId=${categoryId}`);
+      return res?.data?.products;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while getting category specific products!"
       );
     }
   }
@@ -257,6 +275,20 @@ export const productSlice = createSlice({
       state.isLoading = false;
     });
     builder.addCase(userSearchProducts.rejected, (state, action) => {
+      state.error = action?.payload;
+      state.isLoading = false;
+    });
+    // get category specific products
+    builder.addCase(getAllCategoryProducts.pending, (state) => {
+      state.isLoading = true;
+      state.categorySpecificProducts = null;
+      state.error = null;
+    });
+    builder.addCase(getAllCategoryProducts.fulfilled, (state, action) => {
+      state.categorySpecificProducts = action?.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(getAllCategoryProducts.rejected, (state, action) => {
       state.error = action?.payload;
       state.isLoading = false;
     });

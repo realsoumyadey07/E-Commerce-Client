@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 import { useEffect } from "react";
 import WishlistComponent from "@/components/WishlistComponent";
 import EmptyCart from "@/assets/images/no-item.png";
+import { Input } from "@/components/ui/input";
 
 export default function WishlistScreen() {
   const dispatch = useAppDispatch();
@@ -26,8 +27,8 @@ export default function WishlistScreen() {
         {/* Wishlist List */}
         <section className="flex-1 space-y-4">
           {/* Search bar */}
-          <div className="flex justify-between items-center bg-white p-3 rounded-lg shadow">
-            <input
+          <div className="flex justify-between items-center bg-white p-3 rounded-lg">
+            <Input
               type="text"
               placeholder="Search your wishlist here"
               className="flex-1 rounded px-3 py-2 text-sm"

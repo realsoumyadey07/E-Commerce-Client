@@ -12,6 +12,7 @@ export interface Category {
   _id: string;
   category_name: string;
   category_images?: CategoryImages[];
+  is_header: boolean;
 }
 
 interface InitialState {

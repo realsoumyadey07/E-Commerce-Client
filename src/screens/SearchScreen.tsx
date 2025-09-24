@@ -8,7 +8,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import NoItem from "@/assets/images/no-item.png";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { userSearchProducts } from "@/redux/slices/product.slice";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function SearchScreen() {
   const navigation = useNavigate();
@@ -18,14 +18,19 @@ export default function SearchScreen() {
 
   const dispatch = useAppDispatch();
 
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(()=> {
+    inputRef.current?.focus();
+  }, [])
 
   const { userSearchedProduts, isLoading } = useAppSelector(
     (state) => state.product
   );
 
-  const handleSearch = ()=> {
-    if(searchKey) dispatch(userSearchProducts(searchKey));
-  }
+  const handleSearch = () => {
+    if (searchKey) dispatch(userSearchProducts(searchKey));
+  };
 
   if (isLoading) return <ReactLoadingComp />;
 
@@ -40,6 +45,7 @@ export default function SearchScreen() {
           }}
         />
         <Input
+          ref={inputRef}
           type="text"
           placeholder="Search here..."
           value={useSearchKey}
@@ -53,7 +59,11 @@ export default function SearchScreen() {
           }}
           className="flex-1"
         />
-        <Search color="gray" className="cursor-pointer" onClick={handleSearch} />
+        <Search
+          color="gray"
+          className="cursor-pointer"
+          onClick={handleSearch}
+        />
       </div>
 
       <main className="max-w-7xl mx-auto p-4 h-full">
