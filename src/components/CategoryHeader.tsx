@@ -1,20 +1,30 @@
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import { useAppSelector } from "@/hooks/useAppSelector";
+import { getAllCategories } from "@/redux/slices/category.slice";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function CategoryHeader() {
+  const dispatch = useAppDispatch();
+  const { categories, isLoading } = useAppSelector((state) => state.category);
+
+  useEffect(() => {
+    dispatch(getAllCategories());
+  }, [dispatch]);
+
+  if (isLoading) return null;
+
   return (
     <ul className="hidden md:flex items-center gap-4 my-2 text-red-600 mx-auto">
-      <Link to="/" className="hover:underline cursor-pointer font-semibold text-xl">
-        Home
-      </Link>
-      <Link to="/gold-section" className="hover:underline cursor-pointer text-xl font-semibold">
-        Gold
-      </Link>
-      <Link to="/diamond-section" className="hover:underline cursor-pointer font-semibold text-xl">
-        Diamond
-      </Link>
-      <Link to="/silver-section" className="hover:underline cursor-pointer font-semibold text-xl">
-        Silver
-      </Link>
+      {categories &&
+        categories.map((category) => category.is_header && (
+          <Link
+            to={`/${category._id}/products`}
+            className="hover:underline cursor-pointer font-semibold text-xl"
+          >
+            {category.category_name}
+          </Link>
+        ))}
     </ul>
   );
 }

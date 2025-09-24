@@ -32,6 +32,7 @@ const categorySchema = yup.object({
   image2: imageValidation,
   image3: imageValidation,
   image4: imageValidation,
+  isHeader: yup.boolean().required().nullable(),
 });
 
 export type CategoryFormType = yup.InferType<typeof categorySchema>;
@@ -42,7 +43,6 @@ export default function AddCategory() {
     handleSubmit,
     register,
     reset,
-    // watch,
     formState: { errors },
   } = useForm<CategoryFormType>({
     resolver: yupResolver(categorySchema),
@@ -71,7 +71,8 @@ export default function AddCategory() {
 
     const formData = new FormData();
     formData.append("category_name", data.category_name);
-
+    formData.append("isHeader", String(data.isHeader ?? false));
+    
     files.forEach((file) => {
       if (file) {
         formData.append("category_images", file);
@@ -121,6 +122,20 @@ export default function AddCategory() {
                     {String(errors.category_name.message)}
                   </span>
                 )}
+              </div>
+              <div className="flex items-center space-x-2 md:col-span-2">
+                <input
+                  type="checkbox"
+                  id="isHeader"
+                  {...register("isHeader")}
+                  className="w-4 h-4"
+                />
+                <label
+                  htmlFor="isHeader"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Mark as Header Category
+                </label>
               </div>
 
               {imageFields.map((fieldName, idx) => (
