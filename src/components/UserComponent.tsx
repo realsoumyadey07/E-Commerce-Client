@@ -44,7 +44,7 @@ export default function UserComponent() {
 
           <DropdownMenuContent className="w-64 p-4 shadow-xl">
             <div className="flex flex-col items-center text-center gap-2">
-              <User size={40} className="text-gray-500" />
+              <User onClick={()=> navigate("/user")} size={40} className="text-gray-500" />
               <div>
                 <p className="font-semibold text-sm">{userData?.name}</p>
                 <p className="text-xs text-muted-foreground">

@@ -41,7 +41,7 @@ export default function CartScreen() {
   return (
     <div className="w-full h-full flex flex-col">
       <CategoryHeader />
-      <div className="fixed bg-white w-full top-0">
+      <div className="flex items-center bg-white w-full">
         <ChevronLeft
           className="md:hidden block m-3"
           color="gray"
@@ -52,7 +52,7 @@ export default function CartScreen() {
       </div>
 
       {!isLoading ? (
-        <main className="flex-1 w-full bg-white py-6 md:py-0">
+        <main className="flex-1 w-full bg-white py-4">
           <div className="max-w-7xl mx-auto w-full px-4 flex flex-col lg:flex-row gap-6">
             {/* LEFT: CART ITEMS */}
             <div className="flex-1">

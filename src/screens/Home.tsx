@@ -78,7 +78,7 @@ export default function Home() {
   return (
     <div className="w-full h-full flex flex-col justify-between py-4 md:py-0 overflow-y-auto no-scrollbar pb-[60px] md:pb-0">
       <header className="fixed top-0 left-0 w-full bg-white shadow-sm z-20 md:hidden">
-        <div className="flex justify-between items-center p-2">
+        <div className="flex justify-between items-center p-4">
           {/* Store Name */}
           <StoreName />
 
@@ -86,7 +86,7 @@ export default function Home() {
           <Drawer>
             <DrawerTrigger asChild>
               <button className="rounded-md hover:bg-gray-100 transition">
-                <Menu className="w-4 h-4 text-red-600" />
+                <Menu className="w-6 h-6 text-red-600" />
               </button>
             </DrawerTrigger>
             <DrawerContent>

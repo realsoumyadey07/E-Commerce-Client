@@ -24,7 +24,7 @@ export default function WishlistScreen() {
   if (isLoadingList) return <ReactLoadingComp />;
 
   return (
-    <div className="w-full min-h-screen flex flex-col justify-between bg-gray-50">
+    <div className="w-full min-h-screen flex flex-col justify-between bg-white">
       <main className="max-w-7xl w-full mx-auto p-2 flex gap-6">
         {/* Wishlist List */}
         <section className="flex-1 space-y-4">
