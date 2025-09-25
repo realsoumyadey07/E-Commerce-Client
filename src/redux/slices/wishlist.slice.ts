@@ -2,9 +2,16 @@ import tokenApi from "@/lib/axios/tokenApi";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AxiosError } from "axios";
 
+interface Product {
+  _id: string;
+  product_name: string;
+  price: number;
+  product_image: string;
+}
+
 interface Wishlist {
   userId: string;
-  products: string[];
+  products: Product[];
   createdAt: string;
   updatedAt: string;
 }

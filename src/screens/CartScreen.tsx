@@ -6,12 +6,14 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import { getAllCarts } from "@/redux/slices/cart.slice";
 import { useEffect, useMemo } from "react";
 import EmptyCart from "@/assets/images/no-item.png";
-import { ShieldCheck } from "lucide-react";
+import { ChevronLeft, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MinFooter from "@/components/MinFooter";
+import { useNavigate } from "react-router-dom";
 
 export default function CartScreen() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { allCarts, isLoading } = useAppSelector((state) => state.cart);
 
   useEffect(() => {
@@ -39,8 +41,18 @@ export default function CartScreen() {
   return (
     <div className="w-full h-full flex flex-col">
       <CategoryHeader />
+      <div className="fixed bg-white w-full top-0">
+        <ChevronLeft
+          className="md:hidden block m-3"
+          color="gray"
+          onClick={() => {
+            navigate(-1);
+          }}
+        />
+      </div>
+
       {!isLoading ? (
-        <main className="flex-1 w-full bg-white py-4 md:py-0">
+        <main className="flex-1 w-full bg-white py-6 md:py-0">
           <div className="max-w-7xl mx-auto w-full px-4 flex flex-col lg:flex-row gap-6">
             {/* LEFT: CART ITEMS */}
             <div className="flex-1">
