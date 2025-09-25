@@ -13,7 +13,7 @@ import {
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { deleteProduct, productDetails } from "@/redux/slices/product.slice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import CustomDialogbox from "@/components/CustomDialogbox";
 import toast from "react-hot-toast";
@@ -34,13 +34,23 @@ export default function ProductDetails() {
   const dispatch = useAppDispatch();
   const { product, isLoading } = useAppSelector((state) => state.product);
   const { userData } = useAppSelector((state) => state.user);
-  const { allWishlists } = useAppSelector(
-    (state) => state.wishlist
-  );
+  const { allWishlists } = useAppSelector((state) => state.wishlist);
+  const [allWishlistedProductId, setAllWishlistedProductId] = useState<
+    string[]
+  >([]);
 
   useEffect(() => {
     if (id) dispatch(productDetails(id));
-    dispatch(getAllWishlists());
+    interface WishlistItem {
+      _id: string;
+    }
+    dispatch(getAllWishlists())
+      .unwrap()
+      .then((res) => {
+        setAllWishlistedProductId(
+          res?.products?.map((i: WishlistItem) => i._id) || []
+        );
+      });
   }, [id, dispatch]);
 
   if (isLoading) return <ReactLoadingComp />;
@@ -86,7 +96,7 @@ export default function ProductDetails() {
 
   const handleAddWishlist = async () => {
     if (allWishlists && id) {
-      if (allWishlists.products?.includes(product?._id)) {
+      if (allWishlistedProductId?.includes(product?._id)) {
         await dispatch(removeFromWishlist({ productId: id })).then(() =>
           dispatch(getAllWishlists())
         );
@@ -100,7 +110,7 @@ export default function ProductDetails() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      <main className="flex-grow container mx-auto md:my-8 md:py-8">
+      <main className="flex-grow container md:my-8 md:py-8 w-full max-w-7xl mx-auto">
         <div className="md:hidden flex items-center w-full p-2 gap-2">
           <ChevronLeft
             color="gray"
@@ -152,13 +162,13 @@ export default function ProductDetails() {
                     userData.role === "user" && (
                       <Heart
                         color={
-                          allWishlists.products?.includes(product?._id)
+                          allWishlistedProductId?.includes(product?._id)
                             ? "red"
                             : "gray"
                         }
                         onClick={handleAddWishlist}
                         fill={
-                          allWishlists.products?.includes(product?._id)
+                          allWishlistedProductId?.includes(product?._id)
                             ? "red"
                             : "#fff"
                         }

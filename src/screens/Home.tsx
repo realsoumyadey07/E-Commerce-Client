@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef } from "react";
-import { ChevronRight, ChevronLeft, CirclePlus } from "lucide-react";
+import { ChevronRight, ChevronLeft, CirclePlus, Menu } from "lucide-react";
 const ProductComponent = lazy(() => import("@/components/ProductComponent"));
 import { useNavigate } from "react-router-dom";
 const ExploreComponent = lazy(() => import("@/components/ExploreComponent"));
@@ -16,6 +16,22 @@ import first from "@/assets/images/new.jpg";
 import second from "@/assets/images/new1.jpg";
 import third from "@/assets/images/new2.jpg";
 import CategoryHeader from "@/components/CategoryHeader";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Card, CardContent } from "@/components/ui/card";
 
 const imageSlids = [first, second, third];
 
@@ -61,12 +77,54 @@ export default function Home() {
 
   return (
     <div className="w-full h-full flex flex-col justify-between py-4 md:py-0 overflow-y-auto no-scrollbar pb-[60px] md:pb-0">
-      <h1 className="font-semibold text-xl flex md:hidden px-4">
-        <StoreName />
-      </h1>
+      <header className="fixed top-0 left-0 w-full bg-white shadow-sm z-20 md:hidden">
+        <div className="flex justify-between items-center p-2">
+          {/* Store Name */}
+          <StoreName />
+
+          {/* Drawer Menu */}
+          <Drawer>
+            <DrawerTrigger asChild>
+              <button className="rounded-md hover:bg-gray-100 transition">
+                <Menu className="w-4 h-4 text-red-600" />
+              </button>
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle>Choose any category from here</DrawerTitle>
+                <DrawerDescription>
+                  Select from the options below
+                </DrawerDescription>
+              </DrawerHeader>
+
+              {/* Categories Carousel */}
+              <Carousel className="w-full max-w-xs mx-auto">
+                <CarouselContent>
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <CarouselItem key={index}>
+                      <div className="p-1">
+                        <Card>
+                          <CardContent className="flex aspect-square items-center justify-center p-6">
+                            <span className="text-4xl font-semibold">
+                              {index + 1}
+                            </span>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            </DrawerContent>
+          </Drawer>
+        </div>
+      </header>
+
       <CategoryHeader />
 
-      <main className="w-full max-w-7xl mx-auto relative md:px-4 pb-4">
+      <main className="w-full max-w-7xl mx-auto relative md:px-4 pt-3 pb-2">
         {imageSlids && <ImageSlider images={imageSlids} />}
 
         <div className="px-2">

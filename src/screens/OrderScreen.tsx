@@ -4,12 +4,14 @@ import { Input } from "@/components/ui/input";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import { getMyOrders } from "@/redux/slices/order.slice";
-import { Search } from "lucide-react";
+import { ChevronLeft, Search } from "lucide-react";
 import { useEffect } from "react";
 import EmptyCart from "@/assets/images/no-item.png";
+import { useNavigate } from "react-router-dom";
 
 export default function OrderScreen() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { allOrders, isLoading } = useAppSelector((state) => state.order);
 
   useEffect(() => {
@@ -23,18 +25,22 @@ export default function OrderScreen() {
       <main className="max-w-7xl w-full mx-auto p-4 flex gap-6">
         {/* Orders List */}
         <section className="flex-1 space-y-4">
-          <div className="flex justify-between items-center bg-white p-3 rounded-lg">
+          <div className="flex justify-between items-center bg-white p-2 rounded-lg gap-2">
+            <ChevronLeft
+              color="gray"
+              onClick={() => {
+                navigate(-1);
+              }}
+            />
             <Input
               type="text"
-              placeholder="Search your orders here"
+              placeholder="Search your wishlist here"
               className="flex-1 rounded px-3 py-2 text-sm"
             />
             <button className="ml-2 px-4 py-2 hidden md:block bg-blue-600 text-white rounded text-sm">
-              Search Orders
+              Search Order
             </button>
-            <button className="ml-2 block md:hidden px-4 py-2 bg-blue-600 text-white rounded text-sm">
-              <Search />
-            </button>
+            <Search className="md:hidden block" color="gray" />
           </div>
 
           {/* Orders */}
