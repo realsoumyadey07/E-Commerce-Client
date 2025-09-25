@@ -14,6 +14,7 @@ import {
 } from "@/redux/slices/user.slice";
 import { useAppSelector } from "@/hooks/useAppSelector";
 import toast from "react-hot-toast";
+import { FaFacebook, FaGoogle, FaInstagram } from "react-icons/fa";
 
 const loginSchema = yup
   .object({
@@ -92,19 +93,18 @@ export default function Onboarding() {
         {screen === "Login" ? (
           <>
             <div className="w-full max-w-[496px] z-50">
-              <Link to={"/"} className="font-semibold text-gray-800 text-2xl">
-                MERN Stock App
-              </Link>
-              <div className="my-4">
-                <h4 className="text-4xl font-semibold">Login 👋</h4>
-                <p className="text-gray-500 mt-3">A Stock checking app...</p>
+              <div className="my-2 text-center">
+                <Link to={"/"} className="font-semibold text-gray-800 text-3xl">
+                  Login
+                </Link>
+                <p className="text-gray-500">Welcome back to your profile</p>
               </div>
               <form
                 onSubmit={handleSubmit(handleLogin)}
-                className="flex flex-col gap-2"
+                className="flex flex-col gap-3"
               >
                 <div className="flex flex-col gap-2">
-                  <label htmlFor="email" className="text-gray-400">
+                  <label htmlFor="email" className="text-gray-600">
                     Email
                   </label>
                   <input
@@ -121,12 +121,11 @@ export default function Onboarding() {
                   )}
                 </div>
                 <div className="flex relative flex-col gap-2">
-                  <label htmlFor="password" className="text-gray-400">
+                  <label htmlFor="password" className="text-gray-600">
                     Password
                   </label>
                   <input
                     type={isHidePassword ? "text" : "password"}
-
                     className="border border-gray-500 rounded-md py-2 px-3"
                     placeholder={
                       isHidePassword ? "*******" : "Enter your password here..."
@@ -140,7 +139,7 @@ export default function Onboarding() {
                     </span>
                   )}
                   <span
-                    className="absolute top-11 right-4"
+                    className="absolute top-10 right-4"
                     onClick={() => setIsHidePassword(!isHidePassword)}
                   >
                     {isHidePassword ? <EyeClosed /> : <Eye />}
@@ -148,7 +147,7 @@ export default function Onboarding() {
                 </div>
                 <Button
                   type="submit"
-                  className="py-2 px-3 bg-gray-700 hover:bg-gray-800 text-white rounded-[5px] font-semibold my-4 z-10"
+                  className="p-5 text-md bg-gray-800 text-white rounded-[5px] font-semibold z-10"
                   disabled={isLoading}
                 >
                   {isLoading ? "Logging in..." : "Login"}
@@ -164,18 +163,29 @@ export default function Onboarding() {
                     Don&apos;t have an account??
                   </p>
                 </span>
+                <div className="flex items-center w-full">
+                  <div className="flex-grow border-t border-gray-400"></div>
+                  <span className="px-3 text-xl font-semibold text-gray-700">
+                    Or continue with
+                  </span>
+                  <div className="flex-grow border-t border-gray-400"></div>
+                </div>
+                <div className="w-full flex justify-center gap-4">
+                  <FaGoogle size={25} color="gray" />
+                  <FaFacebook size={25} color="gray" />
+                  <FaInstagram size={25} color="gray" />
+                </div>
               </form>
             </div>
           </>
         ) : (
           <>
             <div className="w-full max-w-[496px] z-50">
-              <Link to={"/"} className="font-semibold text-gray-800 text-2xl">
-                MERN Stock App
-              </Link>
-              <div className="my-4">
-                <h4 className="text-4xl font-semibold">Register 👋</h4>
-                <p className="text-gray-500 mt-3">A Stock checking app...</p>
+              <div className="my-2 text-center">
+                <Link to={"/"} className="font-semibold text-gray-800 text-3xl">
+                  Register
+                </Link>
+                <p className="text-gray-500">Register here to get started</p>
               </div>
               <form
                 onSubmit={handleSubmit(handleRegister)}
@@ -221,7 +231,6 @@ export default function Onboarding() {
                   </label>
                   <input
                     type={isHidePassword ? "text" : "password"}
-
                     className="border border-gray-500 rounded-md py-2 px-3"
                     placeholder={
                       isHidePassword ? "*******" : "Enter your password here..."
@@ -243,7 +252,7 @@ export default function Onboarding() {
                 </div>
                 <Button
                   type="submit"
-                  className="py-2 px-3 bg-gray-700 hover:bg-gray-800 text-white rounded-[5px] font-semibold my-4 z-10"
+                  className="py-2 px-3 bg-gray-700 hover:bg-gray-800 text-white rounded-[5px] font-semibold my-2 z-10"
                   disabled={isLoading}
                 >
                   {isLoading ? "Registering..." : "Register"}
@@ -259,6 +268,18 @@ export default function Onboarding() {
                     Already have an account??
                   </p>
                 </span>
+                <div className="flex items-center w-full">
+                  <div className="flex-grow border-t border-gray-400"></div>
+                  <span className="px-3 text-xl font-semibold text-gray-700">
+                    Or continue with
+                  </span>
+                  <div className="flex-grow border-t border-gray-400"></div>
+                </div>
+                <div className="w-full flex justify-center gap-4">
+                  <FaGoogle size={25} color="gray" />
+                  <FaFacebook size={25} color="gray" />
+                  <FaInstagram size={25} color="gray" />
+                </div>
               </form>
             </div>
           </>

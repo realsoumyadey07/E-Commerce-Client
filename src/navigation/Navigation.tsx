@@ -18,6 +18,7 @@ import Onboarding from "@/screens/Onboarding";
 import OrderScreen from "@/screens/OrderScreen";
 import ProductDetails from "@/screens/ProductDetails";
 import SearchScreen from "@/screens/SearchScreen";
+import UserScreen from "@/screens/UserScreen";
 import WishlistScreen from "@/screens/WishlistScreen";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -33,6 +34,7 @@ export default function Navigation() {
           <Route path="/search" element={<SearchScreen />} />
           <Route path="/product/:id" element={<ProductDetails />} />
           <Route path="/orders" element={<OrderScreen/>} />
+          <Route path="/user" element={<UserScreen/>} />
           <Route path="/checkout/:id" element={<CheckoutScreen/>} />
 
           <Route path="/:category/products"  element={<CategorySpecificScreen/>} />

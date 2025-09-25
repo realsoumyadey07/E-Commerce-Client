@@ -19,7 +19,7 @@ import CustomDialogbox from "@/components/CustomDialogbox";
 import toast from "react-hot-toast";
 import ReactLoadingComp from "@/components/ReactLoadingComp";
 import Footer from "@/components/Footer";
-import { addToCart } from "@/redux/slices/cart.slice";
+import { addToCart, getAllCarts } from "@/redux/slices/cart.slice";
 import { Input } from "@/components/ui/input";
 import {
   addToWishlist,
@@ -91,7 +91,10 @@ export default function ProductDetails() {
           success: <b>Product added to cart successfully!</b>,
           error: (err) => <b>{err || "Could not add product to the cart!"}</b>,
         })
-        .then(() => navigate("/cart"));
+        .then(() => {
+          dispatch(getAllCarts());
+          navigate("/cart")
+        });
   };
 
   const handleAddWishlist = async () => {
