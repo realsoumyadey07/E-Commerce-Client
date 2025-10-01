@@ -149,7 +149,7 @@ export default function ProductDetails() {
             {/* Images Section */}
             <div className="flex flex-col md:flex-row-reverse gap-4">
               {/* Main Image */}
-              <div className="w-full h-80 md:h-[500px] flex items-center justify-center border rounded-lg shadow">
+              <div className="w-full h-80 md:h-[400px] flex items-center justify-center border rounded-lg shadow">
                 {isCloudinaryUrl(selectedImage || product.images[0]?.url) ? (
                   <AdvancedImage
                     cldImg={createOptimizedImage(selectedImage || product.images[0].url)}
@@ -166,18 +166,18 @@ export default function ProductDetails() {
               </div>
 
               {/* Thumbnails */}
-              <div className="grid grid-cols-4 gap-3 md:grid-cols-1 md:h-[500px] md:overflow-y-auto">
+              <div className="grid grid-cols-4 gap-3 md:grid-cols-1 md:h-[400px] md:overflow-y-auto">
                 {product.images.map((i, idx) => (
                   <div
                     key={idx}
-                    className="cursor-pointer border rounded-lg overflow-hidden hover:opacity-80"
+                    className="cursor-pointer border rounded-md overflow-hidden hover:opacity-80"
                     onMouseOver={() => setSelectedImage(i.url)}
                   >
                     {isCloudinaryUrl(i.url) ? (
                       <AdvancedImage
                         cldImg={createOptimizedImage(i.url)}
                         alt={`product-${idx}`}
-                        className="object-cover w-full h-24"
+                        className="object-cover w-full h-full"
                       />
                     ) : (
                       <img
