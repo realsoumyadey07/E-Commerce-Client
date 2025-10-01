@@ -17,14 +17,18 @@ export default function CategoryHeader() {
   return (
     <ul className="hidden md:flex items-center gap-4 my-2 text-red-600 mx-auto">
       {categories &&
-        categories.map((category) => category.is_header && (
-          <Link
-            to={`/${category._id}/products`}
-            className="hover:underline cursor-pointer font-semibold text-xl"
-          >
-            {category.category_name}
-          </Link>
-        ))}
+        categories.map(
+          (category) =>
+            category.is_header && (
+              <Link
+                key={category._id}
+                to={`/${category._id}/products`}
+                className="hover:underline cursor-pointer font-semibold text-xl"
+              >
+                {category.category_name}
+              </Link>
+            )
+        )}
     </ul>
   );
 }
