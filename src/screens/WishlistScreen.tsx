@@ -25,13 +25,14 @@ export default function WishlistScreen() {
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between bg-white">
-      <main className="max-w-7xl w-full mx-auto p-2 flex gap-6">
+      <main className="max-w-7xl w-full mx-auto flex gap-6">
         {/* Wishlist List */}
         <section className="flex-1 space-y-4">
           {/* Search bar */}
-          <div className="flex justify-between items-center bg-white p-2 rounded-lg gap-2">
+          <div className="flex items-center gap-2 md:hidden w-full p-3 shadow bg-white sticky top-0 z-10">
             <ChevronLeft
               color="gray"
+              className="cursor-pointer"
               onClick={() => {
                 navigate(-1);
               }}
@@ -39,12 +40,12 @@ export default function WishlistScreen() {
             <Input
               type="text"
               placeholder="Search your wishlist here"
-              className="flex-1 rounded px-3 py-2 text-sm"
+              className="flex-1"
             />
             <button className="ml-2 px-4 py-2 hidden md:block bg-blue-600 text-white rounded text-sm">
               Search Wishlist
             </button>
-            <Search className="md:hidden block" color="gray" />
+            <Search className="md:hidden block cursor-pointer" color="gray" />
           </div>
 
           {/* Wishlist Items */}
@@ -54,7 +55,7 @@ export default function WishlistScreen() {
                 key={product?._id}
                 id={product?._id}
                 product_name={product?.product_name}
-                product_image={product?.product_image}
+                image={product?.images?.[0]}
                 price={product?.price}
               />
             ))

@@ -3,17 +3,20 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { AdvancedImage } from "@cloudinary/react";
 import { createOptimizedImage } from "@/lib/cloudinary";
 import first from "@/assets/images/1.jpg";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 interface ExploreProps {
   category: Category;
 }
 
 export default function ExploreComponent({ category }: ExploreProps) {
+  const navigate = useNavigate();
+
   return (
-    <Card className="w-[320px] rounded-2xl cursor-pointer transition-shadow duration-300 shadow-sm hover:shadow-md">
+    <Card className="w-[320px] rounded-2xl cursor-pointer transition-shadow duration-300 shadow-sm hover:shadow-md" onClick={()=> navigate(`/${category?._id}/products`)}>
       <CardHeader>
-        <CardTitle className="text-base font-semibold">
+        <CardTitle className="text-base font-semibold text-gray-600">
           {category?.category_name}
         </CardTitle>
       </CardHeader>
@@ -42,7 +45,7 @@ export default function ExploreComponent({ category }: ExploreProps) {
       </CardContent>
 
       <CardFooter>
-        <Link to={`/${category?._id}/products`} className="text-blue-700 text-sm hover:underline">Explore all</Link>
+        <p className="text-blue-700 text-sm hover:underline">Explore all</p>
       </CardFooter>
     </Card>
   );

@@ -5,13 +5,20 @@ import CustomDialogbox from "./CustomDialogbox";
 import { useAppDispatch } from "@/hooks/useAppDispatch";
 import { deleteFromCart } from "@/redux/slices/cart.slice";
 import toast from "react-hot-toast";
+import { AdvancedImage } from "@cloudinary/react";
+import { createOptimizedImage } from "@/lib/cloudinary";
+
+interface Image {
+  url: string;
+  public_id: string;
+}
 
 interface CartProductProps {
   id: string;
   productId: string;
   product_name: string;
   price: number;
-  product_image: string;
+  image: Image;
   quantity: number;
 }
 
@@ -20,7 +27,7 @@ export default function CartComponent({
   productId,
   product_name,
   price,
-  product_image,
+  image,
   quantity,
 }: CartProductProps) {
   const dispatch = useAppDispatch();
@@ -39,8 +46,8 @@ export default function CartComponent({
 
   return (
     <div className="w-full flex flex-col md:flex-row items-center md:items-start md:justify-between gap-4 p-4 border rounded shadow-sm">
-      <img
-        src={product_image}
+      <AdvancedImage
+        cldImg={createOptimizedImage(image?.url || "")}
         alt={product_name}
         className="w-24 h-24 md:w-28 md:h-28 object-contain rounded-md"
       />

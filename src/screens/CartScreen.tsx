@@ -65,7 +65,7 @@ export default function CartScreen() {
                       key={index}
                       product_name={cart?.productId?.product_name}
                       price={cart?.productId?.price}
-                      product_image={cart?.productId?.product_image}
+                      image={cart?.productId?.images[0]}
                       quantity={cart?.quantity}
                     />
                   ))}

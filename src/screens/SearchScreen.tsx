@@ -81,7 +81,7 @@ export default function SearchScreen() {
                 <ProductComponent
                   name={product?.product_name}
                   price={product?.price}
-                  image={product?.product_image}
+                  image={product?.images[0]}
                 />
               </Link>
             ))

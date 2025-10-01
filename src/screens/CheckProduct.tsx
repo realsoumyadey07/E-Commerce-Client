@@ -72,8 +72,7 @@ export default function CheckProduct() {
                 <TableRow onClick={()=> navigate(`/admin/product-details/${product._id}`)} key={product._id} className="hover:bg-gray-50 cursor-pointer">
                   <TableCell>
                     <Avatar>
-                      <AdvancedImage cldImg={createOptimizedImage(product?.product_image)}/>
-                      {/* <AvatarImage src={product?.product_image} /> */}
+                      <AdvancedImage cldImg={createOptimizedImage(product?.images?.[0]?.url)}/>
                       <AvatarFallback>Icon</AvatarFallback>
                     </Avatar>
                   </TableCell>

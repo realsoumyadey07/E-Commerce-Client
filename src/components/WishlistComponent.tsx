@@ -1,15 +1,22 @@
+import { createOptimizedImage } from "@/lib/cloudinary";
+import { AdvancedImage } from "@cloudinary/react";
 import { Link } from "react-router-dom";
+
+interface Image {
+  url: string;
+  public_id: string;
+}
 
 export default function WishlistComponent({
   id,
   product_name,
   price,
-  product_image
+  image
 }: {
   id: string;
   product_name: string;
   price: number;
-  product_image: string
+  image: Image;
 }) {
 
   // if (isLoading) return <ReactLoadingComp />;
@@ -20,8 +27,8 @@ export default function WishlistComponent({
       key={id}
       className="bg-white rounded-lg shadow p-4 flex gap-4 cursor-pointer"
     >
-      <img
-        src={product_image || "/placeholder.png"}
+      <AdvancedImage
+        cldImg={createOptimizedImage(image.url)}
         alt={product_name}
         className="w-20 h-20 object-contain"
       />
