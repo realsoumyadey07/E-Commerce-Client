@@ -4,6 +4,11 @@ import type { AxiosError } from "axios";
 import type { Category } from "./category.slice";
 import openApi from "@/lib/axios/openApi";
 
+interface Image {
+  url: string;
+  public_id: string;
+}
+
 export interface Product {
   _id: string;
   product_name: string;
@@ -11,8 +16,7 @@ export interface Product {
   price: number;
   description: string;
   quantity: number;
-  product_image: string;
-  image_public_id: string;
+  images: Image[];
   createdAt: string;
   updatedAt: string;
 }

@@ -8,6 +8,8 @@ import { ChevronLeft, Search } from "lucide-react";
 import { useEffect } from "react";
 import EmptyCart from "@/assets/images/no-item.png";
 import { useNavigate } from "react-router-dom";
+import { createOptimizedImage } from "@/lib/cloudinary";
+import { AdvancedImage } from "@cloudinary/react";
 
 export default function OrderScreen() {
   const dispatch = useAppDispatch();
@@ -22,12 +24,13 @@ export default function OrderScreen() {
 
   return (
     <div className="w-full min-h-screen flex flex-col justify-between bg-white">
-      <main className="max-w-7xl w-full mx-auto p-4 flex gap-6">
+      <main className="max-w-7xl w-full mx-auto flex gap-6">
         {/* Orders List */}
         <section className="flex-1 space-y-4">
-          <div className="flex justify-between items-center bg-white p-2 rounded-lg gap-2">
+          <div className="flex items-center gap-2 md:hidden w-full p-3 shadow bg-white sticky top-0 z-10">
             <ChevronLeft
               color="gray"
+              className="cursor-pointer"
               onClick={() => {
                 navigate(-1);
               }}
@@ -35,7 +38,7 @@ export default function OrderScreen() {
             <Input
               type="text"
               placeholder="Search your wishlist here"
-              className="flex-1 rounded px-3 py-2 text-sm"
+              className="flex-1"
             />
             <button className="ml-2 px-4 py-2 hidden md:block bg-blue-600 text-white rounded text-sm">
               Search Order
@@ -51,14 +54,19 @@ export default function OrderScreen() {
                 className="bg-white rounded-lg shadow p-4 flex gap-4"
               >
                 {/* Product image */}
-                <img
-                  src={
-                    order.products[0]?.productId?.product_image ||
-                    "/placeholder.png"
-                  }
-                  alt={order.products[0]?.productId?.product_name}
-                  className="w-20 h-20 object-contain"
-                />
+                {order.products[0]?.productId?.images?.[0]?.url ? (
+                  <AdvancedImage
+                    cldImg={createOptimizedImage(
+                      order.products[0].productId.images[0].url
+                    )}
+                    alt={order.products[0].productId.product_name}
+                    className="w-20 h-20 object-contain"
+                  />
+                ) : (
+                  <div className="w-20 h-20 bg-gray-100 flex items-center justify-center rounded">
+                    <span className="text-xs text-gray-400">No Image</span>
+                  </div>
+                )}
 
                 {/* Details */}
                 <div className="flex-1">

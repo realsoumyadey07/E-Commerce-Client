@@ -26,6 +26,12 @@ import {
   getAllWishlists,
   removeFromWishlist,
 } from "@/redux/slices/wishlist.slice";
+import { AdvancedImage } from "@cloudinary/react";
+import { createOptimizedImage, isCloudinaryUrl } from "@/lib/cloudinary";
+
+interface WishlistItem {
+  _id: string;
+}
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -35,15 +41,12 @@ export default function ProductDetails() {
   const { product, isLoading } = useAppSelector((state) => state.product);
   const { userData } = useAppSelector((state) => state.user);
   const { allWishlists } = useAppSelector((state) => state.wishlist);
-  const [allWishlistedProductId, setAllWishlistedProductId] = useState<
-    string[]
-  >([]);
+  const [allWishlistedProductId, setAllWishlistedProductId] = useState<string[]>([]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (id) dispatch(productDetails(id));
-    interface WishlistItem {
-      _id: string;
-    }
+
     dispatch(getAllWishlists())
       .unwrap()
       .then((res) => {
@@ -87,13 +90,13 @@ export default function ProductDetails() {
     if (id && userData?._id)
       toast
         .promise(cartProductPromise(), {
-          loading: "Add product to cart...",
+          loading: "Adding product to cart...",
           success: <b>Product added to cart successfully!</b>,
-          error: (err) => <b>{err || "Could not add product to the cart!"}</b>,
+          error: (err) => <b>{err || "Could not add product to cart!"}</b>,
         })
         .then(() => {
           dispatch(getAllCarts());
-          navigate("/cart")
+          navigate("/cart");
         });
   };
 
@@ -102,10 +105,22 @@ export default function ProductDetails() {
       if (allWishlistedProductId?.includes(product?._id)) {
         await dispatch(removeFromWishlist({ productId: id })).then(() =>
           dispatch(getAllWishlists())
+            .unwrap()
+            .then((res) =>
+              setAllWishlistedProductId(
+                res?.products?.map((i: WishlistItem) => i._id) || []
+              )
+            )
         );
       } else {
         await dispatch(addToWishlist({ productId: id })).then(() =>
           dispatch(getAllWishlists())
+            .unwrap()
+            .then((res) =>
+              setAllWishlistedProductId(
+                res?.products?.map((i: WishlistItem) => i._id) || []
+              )
+            )
         );
       }
     }
@@ -113,7 +128,8 @@ export default function ProductDetails() {
 
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      <main className="flex-grow container md:my-8 md:py-8 w-full max-w-7xl mx-auto">
+      <main className="flex-grow container md:py-8 w-full max-w-7xl mx-auto">
+        {/* Mobile Search Bar */}
         <div className="md:hidden flex items-center w-full p-2 gap-2">
           <ChevronLeft
             color="gray"
@@ -128,18 +144,56 @@ export default function ProductDetails() {
           <Search color="gray" />
         </div>
 
-        <div className=" bg-white overflow-hidden">
+        <div className="bg-white overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="flex justify-center items-center">
-              <img
-                src={product.product_image || "/placeholder.png"}
-                alt={product.product_name}
-                className="object-cover w-full max-w-md h-60 md:h-80 shadow-md"
-              />
+            {/* Images Section */}
+            <div className="flex flex-col md:flex-row-reverse gap-4">
+              {/* Main Image */}
+              <div className="w-full h-80 md:h-[500px] flex items-center justify-center border rounded-lg shadow">
+                {isCloudinaryUrl(selectedImage || product.images[0]?.url) ? (
+                  <AdvancedImage
+                    cldImg={createOptimizedImage(selectedImage || product.images[0].url)}
+                    alt={product.product_name}
+                    className="object-contain w-full h-full rounded-lg"
+                  />
+                ) : (
+                  <img
+                    src={selectedImage || product.images[0]?.url}
+                    alt={product.product_name}
+                    className="object-contain w-full h-full rounded-lg"
+                  />
+                )}
+              </div>
+
+              {/* Thumbnails */}
+              <div className="grid grid-cols-4 gap-3 md:grid-cols-1 md:h-[500px] md:overflow-y-auto">
+                {product.images.map((i, idx) => (
+                  <div
+                    key={idx}
+                    className="cursor-pointer border rounded-lg overflow-hidden hover:opacity-80"
+                    onMouseOver={() => setSelectedImage(i.url)}
+                  >
+                    {isCloudinaryUrl(i.url) ? (
+                      <AdvancedImage
+                        cldImg={createOptimizedImage(i.url)}
+                        alt={`product-${idx}`}
+                        className="object-cover w-full h-24"
+                      />
+                    ) : (
+                      <img
+                        src={i.url}
+                        alt={`product-${idx}`}
+                        className="object-cover w-full h-24"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="flex flex-col justify-between gap-2 p-4">
-              <div className="space-y-4">
+            {/* Product Info Section */}
+            <div className="flex flex-col gap-4 p-4">
+              <div className="space-y-2">
                 <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
                   {product.product_name}
                 </h1>
@@ -149,12 +203,11 @@ export default function ProductDetails() {
                 </p>
 
                 <div className="flex items-center justify-between gap-3 text-sm">
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center gap-2">
                     <div className="flex items-center gap-1 text-yellow-600">
                       <Star className="w-5 h-5 fill-yellow-500" />
                       <span>4.7</span>
                     </div>
-
                     <span className="bg-green-100 text-green-700 px-3 py-0.5 rounded-full text-xs">
                       Certified
                     </span>
@@ -185,6 +238,7 @@ export default function ProductDetails() {
                 </div>
               </div>
 
+              {/* Admin Actions */}
               {userData && userData.role === "admin" ? (
                 <div className="mt-6 flex flex-col md:flex-row gap-2 w-full">
                   <Button
@@ -209,6 +263,7 @@ export default function ProductDetails() {
                 </div>
               ) : null}
 
+              {/* User Actions */}
               <div className="flex flex-col gap-2 w-full md:items-center md:justify-between">
                 {userData?.role === "user" && (
                   <div className="flex flex-col md:flex-row gap-2 w-full">

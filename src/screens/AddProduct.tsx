@@ -19,6 +19,24 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import { createProduct } from "@/redux/slices/product.slice";
 import toast from "react-hot-toast";
 
+// --- Validation ---
+const imageValidation = yup
+  .mixed<FileList>()
+  .required("Image is required")
+  .test("fileType", "Only images are allowed", (fileList) => {
+    if (!fileList || fileList.length === 0) return false;
+    const file = fileList[0];
+    return [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "image/gif",
+      "image/webp",
+    ].includes(file.type);
+  });
+
+const imageFields = ["image1", "image2", "image3", "image4"] as const;
+
 const productSchema = yup.object({
   product_name: yup.string().required("Product name is required!"),
   category_id: yup.string().required("Category is required!"),
@@ -34,69 +52,66 @@ const productSchema = yup.object({
     .integer("Quantity must be an integer!")
     .min(1, "Quantity must be at least 1")
     .typeError("Quantity must be a number!"),
-  product_image: yup
-    .mixed<File>()
-    .required("Product image is required!")
-    .test("fileType", "Only image files are allowed", (value) => {
-      if (!value) return false;
-      return [
-        "image/jpeg",
-        "image/png",
-        "image/jpg",
-        "image/gif",
-        "image/webp",
-      ].includes(value.type);
-    }),
+  image1: imageValidation,
+  image2: imageValidation,
+  image3: imageValidation,
+  image4: imageValidation,
 });
 
 export type ProductFormType = yup.InferType<typeof productSchema>;
 
-function AddProduct() {
-  const [fileKey, setFileKey] = useState(Date.now());
-  const dispatch = useAppDispatch();
+export default function AddProduct() {
   const {
-    register,
     handleSubmit,
-    control,
+    register,
     reset,
+    control,
     formState: { errors },
   } = useForm<ProductFormType>({
     resolver: yupResolver(productSchema),
   });
 
   const { categories, isLoading } = useAppSelector((state) => state.category);
+  const dispatch = useAppDispatch();
+
+  // For image previews
+  const [previews, setPreviews] = useState<{ [key: string]: string | null }>({
+    image1: null,
+    image2: null,
+    image3: null,
+    image4: null,
+  });
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const handleCreateProduct = (data: ProductFormType) => {
-    // Build FormData for file upload
+    const files = imageFields.map((f) => data[f][0]);
+    const uniqueFiles = new Set(files.map((f) => f?.name));
+    if (uniqueFiles.size !== files.length) {
+      toast.error("You cannot upload the same image twice!");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("product_name", data.product_name);
     formData.append("category_id", data.category_id);
     formData.append("price", String(data.price));
     formData.append("description", data.description);
     formData.append("quantity", String(data.quantity));
-    if (data.product_image) {
-      formData.append("product_image", data.product_image);
-    }
+    files.forEach((file) => {
+      if (file) {
+        formData.append("images", file);
+      }
+    });
 
     toast
-      .promise(
-        dispatch(createProduct(formData)),
-        {
-          loading: "Creating product...",
-          success: <b>Product created successfully!</b>,
-          error: (err) => <b>{err || "Could not create product."}</b>,
-        }
-      )
+      .promise(dispatch(createProduct(formData)), {
+        loading: "Creating product...",
+        success: <b>Product created successfully!</b>,
+        error: (err) => <b>{err || "Could not create product."}</b>,
+      })
       .then(() => {
-        reset({
-          product_name: "",
-          category_id: "",
-          price: "" as unknown as number, // 👈 force empty string
-          description: "",
-          quantity: "" as unknown as number, // 👈 force empty string
-          product_image: undefined,
-        });
-        setFileKey(Date.now());
+        reset();
+        setPreviews({ image1: null, image2: null, image3: null, image4: null });
       });
   };
 
@@ -118,7 +133,8 @@ function AddProduct() {
             onSubmit={handleSubmit(handleCreateProduct)}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex flex-col space-y-2">
+              {/* Product Name */}
+              <div className="flex flex-col space-y-2 md:col-span-2">
                 <label
                   htmlFor="product_name"
                   className="text-sm font-medium text-gray-700"
@@ -133,12 +149,12 @@ function AddProduct() {
                 />
                 {errors?.product_name?.message && (
                   <span className="text-sm text-red-500">
-                    {errors.product_name.message}
+                    {String(errors.product_name.message)}
                   </span>
                 )}
               </div>
-
-              <div className="flex flex-col space-y-2">
+              {/* Category */}
+              <div className="flex flex-col space-y-2 md:col-span-2">
                 <label className="text-sm font-medium text-gray-700">
                   Category
                 </label>
@@ -166,11 +182,11 @@ function AddProduct() {
                 />
                 {errors?.category_id?.message && (
                   <span className="text-sm text-red-500">
-                    {errors.category_id.message}
+                    {String(errors.category_id.message)}
                   </span>
                 )}
               </div>
-
+              {/* Price */}
               <div className="flex flex-col space-y-2">
                 <label
                   htmlFor="price"
@@ -193,27 +209,7 @@ function AddProduct() {
                   </span>
                 )}
               </div>
-
-              <div className="flex flex-col space-y-2 md:col-span-2">
-                <label
-                  htmlFor="description"
-                  className="text-sm font-medium text-gray-700"
-                >
-                  Description
-                </label>
-                <Input
-                  type="text"
-                  placeholder="Enter the description..."
-                  id="description"
-                  {...register("description")}
-                />
-                {errors?.description?.message && (
-                  <span className="text-sm text-red-500">
-                    {errors.description.message}
-                  </span>
-                )}
-              </div>
-
+              {/* Quantity */}
               <div className="flex flex-col space-y-2">
                 <label
                   htmlFor="quantity"
@@ -236,36 +232,88 @@ function AddProduct() {
                   </span>
                 )}
               </div>
-
+              {/* Description */}
               <div className="flex flex-col space-y-2 md:col-span-2">
                 <label
-                  htmlFor="product_image"
+                  htmlFor="description"
                   className="text-sm font-medium text-gray-700"
                 >
-                  Product Image
+                  Description
                 </label>
-                <Controller
-                  name="product_image"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      key={fileKey}
-                      type="file"
-                      accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
-                      className="cursor-pointer"
-                      id="product_image"
-                      onChange={(e) => field.onChange(e.target.files?.[0])} // ✅ single File
-                    />
-                  )}
+                <Input
+                  type="text"
+                  placeholder="Enter the description..."
+                  id="description"
+                  {...register("description")}
                 />
-                {errors?.product_image?.message && (
+                {errors?.description?.message && (
                   <span className="text-sm text-red-500">
-                    {errors.product_image.message}
+                    {errors.description.message}
                   </span>
                 )}
               </div>
+              {/* Images */}
+              {imageFields.map((fieldName, idx) => (
+                <div
+                  className="flex flex-col space-y-2 md:col-span-1"
+                  key={fieldName}
+                >
+                  <label
+                    htmlFor={fieldName}
+                    className="text-sm font-medium text-gray-700"
+                  >
+                    Upload Image {idx + 1}
+                  </label>
+                  <Input
+                    type="file"
+                    accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+                    className="cursor-pointer"
+                    id={fieldName}
+                    {...register(fieldName, {
+                      required: `Image ${idx + 1} is required`,
+                    })}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        setPreviews((prev) => ({
+                          ...prev,
+                          [fieldName]: url,
+                        }));
+                      }
+                    }}
+                  />
+                  {errors?.[fieldName]?.message && (
+                    <span className="text-sm text-red-500">
+                      {String(errors[fieldName]?.message)}
+                    </span>
+                  )}
+                  {/* Preview */}
+                  {previews[fieldName] && (
+                    <img
+                      src={previews[fieldName] as string}
+                      alt={`Preview ${idx + 1}`}
+                      className="w-24 h-24 object-cover rounded-lg border shadow cursor-pointer hover:opacity-80"
+                      onClick={() => setSelectedImage(previews[fieldName])}
+                    />
+                  )}
+                </div>
+              ))}
             </div>
-
+            {/* Modal for full image preview */}
+            {selectedImage && (
+              <div
+                className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
+                onClick={() => setSelectedImage(null)}
+              >
+                <img
+                  src={selectedImage}
+                  alt="Full Preview"
+                  className="w-[600px] h-[400px] object-contain rounded-lg"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            )}
             <div className="flex justify-end">
               <Button
                 type="submit"
@@ -281,5 +329,3 @@ function AddProduct() {
     </div>
   );
 }
-
-export default AddProduct;

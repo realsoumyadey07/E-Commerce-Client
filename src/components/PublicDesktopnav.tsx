@@ -29,6 +29,7 @@ export default function PublicDesktopnav() {
     }
   };
   return (
+
     <div className="hidden md:flex items-center justify-between h-[40px] md:h-[60px] px-4 w-full max-w-7xl mx-auto fixed top-0 left-1/2 -translate-x-1/2 bg-white z-50">
       <StoreName />
 
@@ -74,5 +75,6 @@ export default function PublicDesktopnav() {
         <UserComponent />
       </div>
     </div>
+
   );
 }

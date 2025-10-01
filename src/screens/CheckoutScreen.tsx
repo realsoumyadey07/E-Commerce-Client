@@ -30,6 +30,8 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { createOrder } from "@/redux/slices/order.slice";
 import CustomDialogbox from "@/components/CustomDialogbox";
+import { AdvancedImage } from "@cloudinary/react";
+import { createOptimizedImage } from "@/lib/cloudinary";
 
 const addressSchema = yup.object({
   name: yup.string().required("Name is required!"),
@@ -568,9 +570,9 @@ export default function CheckoutScreen() {
                   {/* Product Item */}
                   {product && (
                     <div className="flex gap-4">
-                      <img
-                        src={product.product_image}
-                        alt={product.product_name}
+                      <AdvancedImage
+                        cldImg={createOptimizedImage(product?.images[0]?.url)}
+                        alt={product?.product_name}
                         className="w-20 h-20 rounded-lg border"
                       />
                       <div className="flex flex-col justify-between w-full items-start sm:flex-row">

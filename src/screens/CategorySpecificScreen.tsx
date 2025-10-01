@@ -56,7 +56,7 @@ export default function CategorySpecificScreen() {
                 >
                   <ProductComponent
                     name={product.product_name}
-                    image={product.product_image}
+                    image={product.images[0]}
                     price={product.price}
                   />
                 </div>

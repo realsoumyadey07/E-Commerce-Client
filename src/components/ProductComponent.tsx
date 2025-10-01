@@ -2,12 +2,17 @@ import { IndianRupee, Star } from "lucide-react";
 import { AdvancedImage } from "@cloudinary/react";
 import { createOptimizedImage, isCloudinaryUrl } from "@/lib/cloudinary";
 
+interface Images {
+  url: string;
+  public_id: string;
+}
+
 interface ProductComponentProps {
   name: string;
   rating?: number;
   price: number;
   cirtified?: boolean;
-  image: string;
+  image: Images;
 }
 
 export default function ProductComponent({
@@ -20,16 +25,16 @@ export default function ProductComponent({
   
 
   return (
-    <div className="w-full h-full rounded shadow-lg bg-white hover:shadow-xl transition-shadow duration-300 flex flex-col">
-      {isCloudinaryUrl(image) ? (
+    <div className="w-[200px] h-full rounded shadow-lg bg-white hover:shadow-xl transition-shadow duration-300 flex flex-col">
+      {isCloudinaryUrl(image?.url) ? (
         <AdvancedImage
-          cldImg={createOptimizedImage(image)}
+          cldImg={createOptimizedImage(image?.url)}
           alt="product"
           className="w-full h-[150px] object-cover rounded-tl rounded-tr"
         />
       ) : (
         <img
-          src={image}
+          src={image?.url}
           alt="product"
           className="w-full h-[150px] object-cover rounded-tl rounded-tr"
           loading="lazy"
