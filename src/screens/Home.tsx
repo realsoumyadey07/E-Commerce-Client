@@ -146,7 +146,7 @@ export default function Home() {
 
         <main className="w-full max-w-7xl mx-auto relative md:px-4 pt-3 pb-2">
           {imageSlids && <ImageSlider images={imageSlids} />}
-          <h1 className="font-contentHeader text-center py-4 text-2xl text-gray-600">Check our <span className="text-red-600">wedding</span> collections...</h1>
+          <h1 className="font-contentHeader text-center py-4 text-lg md:text-2xl text-gray-600">Check our <span className="text-red-600">wedding</span> collections...</h1>
           <div className="flex flex-col md:flex-row w-full gap-4 my-8 mt-0 px-4 md:px-0 md:mt-0">
             <img
               src={forth}
