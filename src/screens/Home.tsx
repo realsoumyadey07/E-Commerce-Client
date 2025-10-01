@@ -33,6 +33,10 @@ import {
 } from "@/components/ui/carousel";
 import { Card, CardContent } from "@/components/ui/card";
 import AnimationPageWrapper from "@/components/AnimationPageWrapper";
+import { AdvancedImage } from "@cloudinary/react";
+import { createOptimizedImage } from "@/lib/cloudinary";
+import forth from "@/assets/images/simran-sood-Xm9M3H_Jtuc-unsplash.jpg";
+import sixth from "@/assets/images/dollar-gill-oH-PNVWykUo-unsplash.jpg";
 
 const imageSlids = [first, second, third];
 
@@ -91,7 +95,9 @@ export default function Home() {
               </DrawerTrigger>
               <DrawerContent>
                 <DrawerHeader>
-                  <DrawerTitle>Choose any category from here</DrawerTitle>
+                  <DrawerTitle className="font-contentHeader text-gray-700">
+                    Choose any category from here
+                  </DrawerTitle>
                   <DrawerDescription>
                     Select from the options below
                   </DrawerDescription>
@@ -99,19 +105,34 @@ export default function Home() {
 
                 <Carousel className="w-full max-w-xs mx-auto">
                   <CarouselContent>
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <CarouselItem key={index}>
-                        <div className="p-1">
-                          <Card>
-                            <CardContent className="flex aspect-square items-center justify-center p-6">
-                              <span className="text-4xl font-semibold">
-                                {index + 1}
-                              </span>
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </CarouselItem>
-                    ))}
+                    {categories &&
+                      categories.map(
+                        (category, index) =>
+                          category.is_header && (
+                            <CarouselItem
+                              key={index}
+                              onClick={() =>
+                                navigation(`/${category._id}/products`)
+                              }
+                            >
+                              <div className="p-1">
+                                <Card>
+                                  <CardContent className="flex flex-col aspect-square items-center justify-center p-6">
+                                    <p className="my-2 text-red-600 font-bold">
+                                      {category.category_name}
+                                    </p>
+                                    <AdvancedImage
+                                      cldImg={createOptimizedImage(
+                                        category.category_images?.[0]?.url || ""
+                                      )}
+                                      className="rounded"
+                                    />
+                                  </CardContent>
+                                </Card>
+                              </div>
+                            </CarouselItem>
+                          )
+                      )}
                   </CarouselContent>
                   <CarouselPrevious />
                   <CarouselNext />
@@ -125,6 +146,19 @@ export default function Home() {
 
         <main className="w-full max-w-7xl mx-auto relative md:px-4 pt-3 pb-2">
           {imageSlids && <ImageSlider images={imageSlids} />}
+          <h1 className="font-contentHeader text-center py-4 text-2xl text-gray-600">Check our <span className="text-red-600">wedding</span> collections...</h1>
+          <div className="flex flex-col md:flex-row w-full gap-4 my-8 mt-0 px-4 md:px-0 md:mt-0">
+            <img
+              src={forth}
+              alt="catelog"
+              className="w-full md:w-2/5 h-[280px] object-cover rounded-lg shadow-md"
+            />
+            <img
+              src={sixth}
+              alt="catelog"
+              className="w-full md:w-3/5 h-[280px] object-cover rounded-lg shadow-md"
+            />
+          </div>
 
           <div className="px-2">
             <h1 className="text-lg md:text-3xl text-gray-800 my-4 text-center font-contentHeader font-[400]">
@@ -151,7 +185,7 @@ export default function Home() {
                       <div
                         onClick={() => navigation(`/product/${product._id}`)}
                         key={i}
-                        className="min-w-[220px] flex-shrink-0 cursor-pointer py-4"
+                        className="w-[200px] h-[300px] flex-shrink-0 cursor-pointer py-4"
                       >
                         <Suspense fallback={<div>Loading products...</div>}>
                           <ProductComponent

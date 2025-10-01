@@ -25,12 +25,12 @@ export default function ProductComponent({
   
 
   return (
-    <div className="w-[200px] h-full rounded shadow-lg bg-white hover:shadow-xl transition-shadow duration-300 flex flex-col">
+    <div className="w-full h-full rounded shadow-lg bg-white hover:shadow-xl transition-shadow duration-300 flex flex-col">
       {isCloudinaryUrl(image?.url) ? (
         <AdvancedImage
           cldImg={createOptimizedImage(image?.url)}
           alt="product"
-          className="w-full h-[150px] object-cover rounded-tl rounded-tr"
+          className="w-full h-[140px] object-cover rounded-tl rounded-tr"
         />
       ) : (
         <img

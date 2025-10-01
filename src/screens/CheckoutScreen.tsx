@@ -32,6 +32,7 @@ import { createOrder } from "@/redux/slices/order.slice";
 import CustomDialogbox from "@/components/CustomDialogbox";
 import { AdvancedImage } from "@cloudinary/react";
 import { createOptimizedImage } from "@/lib/cloudinary";
+import { ChevronLeft } from "lucide-react";
 
 const addressSchema = yup.object({
   name: yup.string().required("Name is required!"),
@@ -154,6 +155,19 @@ export default function CheckoutScreen() {
 
   return (
     <div className="w-full min-h-screen flex flex-col bg-gray-50">
+      <div className="items-center bg-white w-full shadow md:hidden block p-3">
+        <ChevronLeft
+          className="cursor-pointer"
+          color="gray"
+          onClick={() => {
+            if(screen === "payment") {
+              setScreen("checkout");
+            }else {
+              navigation(-1);
+            }
+          }}
+        />
+      </div>
       {screen === "checkout" ? (
         <div className="flex-1 flex justify-center p-4">
           <div className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -584,15 +598,6 @@ export default function CheckoutScreen() {
                             <span className="text-lg font-semibold">
                               ₹{price}
                             </span>
-
-                            {/* <>
-                              <span className="line-through text-gray-400">
-                                ₹{product.price}
-                              </span>
-                              <span className="text-green-600 font-medium">
-                                20% off
-                              </span>
-                            </> */}
                           </div>
                         </div>
                         <div className="flex flex-col md:flex-row items-center gap-2 mt-2 w-full">

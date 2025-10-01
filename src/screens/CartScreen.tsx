@@ -39,11 +39,11 @@ export default function CartScreen() {
   // if (isLoading) return <ReactLoadingComp />;
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col bg-gray-50">
       <CategoryHeader />
-      <div className="flex items-center bg-white w-full">
+      <div className="items-center bg-white w-full shadow md:hidden block p-3">
         <ChevronLeft
-          className="md:hidden block m-3"
+          className="cursor-pointer"
           color="gray"
           onClick={() => {
             navigate(-1);
