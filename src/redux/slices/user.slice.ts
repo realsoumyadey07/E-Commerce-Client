@@ -37,18 +37,20 @@ export interface FormType {
 
 export const userRegistration = createAsyncThunk(
   "user/userRegistration",
-  async (formData: FormType, thunkAPI)=> {
+  async (formData: FormType, thunkAPI) => {
     try {
       const res = await openApi.post("/user/user-registration", {
         name: formData?.name,
         email: formData?.email,
-        password: formData?.password
+        password: formData?.password,
       });
       const data = res.data;
       return data?.user;
     } catch (err) {
-      const error = err as AxiosError<{message: string}>;
-      return thunkAPI.rejectWithValue(error?.response?.data || "Something went wrong while registration");
+      const error = err as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        error?.response?.data || "Something went wrong while registration"
+      );
     }
   }
 );
@@ -62,6 +64,9 @@ export const userLogin = createAsyncThunk(
         password: formData?.password,
       });
       const data = await res.data;
+      if (data?.user?.role === "admin") {
+        window.localStorage.setItem("isAdmin", "true");
+      }
       return data?.user;
     } catch (err) {
       console.log(err);
@@ -75,9 +80,12 @@ export const userLogin = createAsyncThunk(
 
 export const userLogout = createAsyncThunk(
   "user/userLogout",
-  async (_, thunkAPI)=> {
+  async (_, thunkAPI) => {
     try {
-      await tokenApi.get("/user/user-logout");
+      const res = await tokenApi.get("/user/user-logout");
+      if(res?.data?.user?.role === "admin") {
+        window.localStorage.removeItem("isAdmin")
+      }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
       return thunkAPI.rejectWithValue(
@@ -89,13 +97,16 @@ export const userLogout = createAsyncThunk(
 
 export const userProfile = createAsyncThunk(
   "user/userProfile",
-  async (_, thunkAPI)=> {
+  async (_, thunkAPI) => {
     try {
       const res = await tokenApi.get("/user/user-profile");
       return res?.data?.user;
     } catch (error) {
-      const err = error as AxiosError<{message: string}>;
-      return thunkAPI.rejectWithValue(err?.response?.data?.message || "Something went wrong while getting user profile");
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while getting user profile"
+      );
     }
   }
 );
@@ -104,9 +115,9 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    clearUserData: (state)=> {
+    clearUserData: (state) => {
       state.userData = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     //register
@@ -152,23 +163,22 @@ export const userSlice = createSlice({
       state.isLoading = false;
     });
     //profile
-    builder.addCase(userProfile.pending, (state)=> {
+    builder.addCase(userProfile.pending, (state) => {
       state.isLoading = true;
       state.userData = null;
       state.error = null;
     });
-    builder.addCase(userProfile.fulfilled, (state, action)=> {
+    builder.addCase(userProfile.fulfilled, (state, action) => {
       state.userData = action?.payload;
       state.error = null;
       state.isLoading = false;
     });
-    builder.addCase(userProfile.rejected, (state, action)=> {
+    builder.addCase(userProfile.rejected, (state, action) => {
       state.error = action?.payload;
       state.isLoading = false;
-    })
+    });
   },
 });
-
 
 export default userSlice.reducer;
 export const { clearUserData } = userSlice.actions;

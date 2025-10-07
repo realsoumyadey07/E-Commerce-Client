@@ -19,7 +19,7 @@ import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AdvancedImage } from "@cloudinary/react";
-import { createOptimizedImage } from "@/lib/cloudinary"; 
+import { createOptimizedImage } from "@/lib/cloudinary";
 
 export default function CheckCategory() {
   const [searchKeyword, setSearchKeyword] = useState<string>("");
@@ -33,12 +33,22 @@ export default function CheckCategory() {
   }, [dispatch]);
 
   return (
-    <div className="px-6 w-full">
+    <div className="px-6 py-8 w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 min-h-screen transition-colors">
+      <header className="mb-8">
+        <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 tracking-tight mb-2">
+          Category Management
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
+          Browse and manage all available categories with their images.
+        </p>
+      </header>
+
+      {/* Search Bar */}
       <section className="w-full md:w-1/3 flex items-center relative mb-6">
-        <Search className="absolute left-3 text-gray-400" size={20} />
+        <Search className="absolute left-3 text-gray-400 dark:text-gray-500" size={20} />
         <Input
           type="text"
-          placeholder="Search here..."
+          placeholder="Search category..."
           value={searchKeyword}
           onChange={(e) => {
             setSearchKeyword(e.target.value);
@@ -48,57 +58,84 @@ export default function CheckCategory() {
               dispatch(searchCategory(e.target.value));
             }
           }}
-          className="pl-10 w-full"
+          className="pl-10 w-full bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm focus:ring-2 focus:ring-indigo-500"
         />
       </section>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-lg shadow pb-2">
-        <Table className="min-w-full bg-white">
-          <TableCaption className="text-gray-500">
+      <div className="overflow-x-auto rounded shadow border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <Table className="min-w-full">
+          <TableCaption className="text-gray-500 dark:text-gray-400">
             {categories && categories.length > 0
-              ? "A list of your recent categories."
-              : "No category found"}
+              ? "A list of your available categories."
+              : "No category found."}
           </TableCaption>
           <TableHeader>
-            <TableRow className="bg-gray-100">
-              <TableHead className="w-[120px] font-semibold">Name</TableHead>
-              <TableHead className="font-semibold">Image 1</TableHead>
-              <TableHead className="font-semibold">Image 2</TableHead>
-              <TableHead className="font-semibold">Image 3</TableHead>
-              <TableHead className="font-semibold">Image 4</TableHead>
+            <TableRow className="bg-gray-100 dark:bg-gray-800">
+              <TableHead className="w-[120px] font-semibold text-gray-700 dark:text-gray-300">
+                Name
+              </TableHead>
+              <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+                Image 1
+              </TableHead>
+              <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+                Image 2
+              </TableHead>
+              <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+                Image 3
+              </TableHead>
+              <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+                Image 4
+              </TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
-            {categories &&
+            {categories && categories.length > 0 ? (
               categories.map((category) => (
                 <TableRow
-                  onClick={() =>
-                    navigate(`/admin/category-details/${category._id}`)
-                  }
                   key={category._id}
-                  className="hover:bg-gray-50 cursor-pointer"
+                  onClick={() => navigate(`/admin/category-details/${category._id}`)}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-colors cursor-pointer"
                 >
                   {/* Category Name */}
-                  <TableCell>{category?.category_name}</TableCell>
+                  <TableCell className="font-medium text-gray-800 dark:text-gray-100">
+                    {category?.category_name}
+                  </TableCell>
 
-                  {/* Images */}
-                  {category?.category_images?.map((img, idx) => {
-                    const optimizedImg = createOptimizedImage(img?.url);
+                  {/* Category Images */}
+                  {Array.from({ length: 4 }).map((_, idx) => {
+                    const img = category?.category_images?.[idx];
+                    const optimizedImg = img ? createOptimizedImage(img.url) : null;
                     return (
                       <TableCell key={idx}>
-                        <Avatar>
-                          <AdvancedImage
-                            cldImg={optimizedImg}
-                            className="object-cover w-12 h-12 rounded-full"
-                          />
-                          <AvatarFallback>I</AvatarFallback>
+                        <Avatar className="w-12 h-12 border border-gray-200 dark:border-gray-700">
+                          {optimizedImg ? (
+                            <AdvancedImage
+                              cldImg={optimizedImg}
+                              className="object-cover w-full h-full rounded-full"
+                            />
+                          ) : (
+                            <AvatarFallback className="text-sm bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                              N/A
+                            </AvatarFallback>
+                          )}
                         </Avatar>
                       </TableCell>
                     );
                   })}
                 </TableRow>
-              ))}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="text-center py-6 text-gray-500 dark:text-gray-400"
+                >
+                  No categories found.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>

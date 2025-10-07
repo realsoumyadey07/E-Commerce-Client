@@ -29,61 +29,122 @@ export default function CheckProduct() {
     dispatch(getAllProducts());
   }, [dispatch]);
 
-
   return (
-    <div className="px-6 w-full">
+    <div className="px-6 py-8 w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 min-h-screen transition-colors">
+      {/* Header */}
+      <header className="mb-8">
+        <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 tracking-tight mb-2">
+          Product Management
+        </h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
+          View, search, and manage all your products.
+        </p>
+      </header>
+
+      {/* Search */}
       <section className="w-full md:w-1/3 flex items-center relative mb-6">
-        <Search className="absolute left-3 text-gray-400" size={20} />
+        <Search className="absolute left-3 text-gray-400 dark:text-gray-500" size={20} />
         <Input
           type="text"
-          placeholder="Search here..."
+          placeholder="Search product..."
           value={searchKeyword}
           onChange={(e) => {
-            setSearchKeyword(e.target.value);
-            if (e.target.value.trim() === "") {
+            const value = e.target.value;
+            setSearchKeyword(value);
+            if (value.trim() === "") {
               dispatch(getAllProducts());
             } else {
-              dispatch(searchProduct(searchKeyword));
+              dispatch(searchProduct(value));
             }
           }}
-          className="pl-10 w-full"
+          className="pl-10 w-full bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 shadow-sm focus:ring-2 focus:ring-indigo-500"
         />
       </section>
 
-      <div className="overflow-x-auto rounded-lg shadow pb-2">
-        <Table className="min-w-full bg-white">
-          <TableCaption className="text-gray-500">
+      {/* Table */}
+      <div className="overflow-x-auto rounded shadow border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <Table className="min-w-full">
+          <TableCaption className="text-gray-500 dark:text-gray-400">
             {productsData && productsData.length > 0
-              ? "A list of your recent products."
-              : "No product found"}
+              ? "A list of your available products."
+              : "No products found."}
           </TableCaption>
+
           <TableHeader>
-            <TableRow className="bg-gray-100">
-              <TableHead className="w-[120px] font-semibold">Photo</TableHead>
-              <TableHead className="font-semibold">Name</TableHead>
-              <TableHead className="font-semibold">Quantity</TableHead>
-              <TableHead className="font-semibold">Category</TableHead>
-              <TableHead className="text-right font-semibold">Price</TableHead>
+            <TableRow className="bg-gray-100 dark:bg-gray-800">
+              <TableHead className="w-[100px] font-semibold text-gray-700 dark:text-gray-300">
+                Photo
+              </TableHead>
+              <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+                Name
+              </TableHead>
+              <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+                Quantity
+              </TableHead>
+              <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+                Category
+              </TableHead>
+              <TableHead className="text-right font-semibold text-gray-700 dark:text-gray-300">
+                Price
+              </TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
-            {productsData &&
+            {productsData && productsData.length > 0 ? (
               productsData.map((product) => (
-                <TableRow onClick={()=> navigate(`/admin/product-details/${product._id}`)} key={product._id} className="hover:bg-gray-50 cursor-pointer">
+                <TableRow
+                  key={product._id}
+                  onClick={() => navigate(`/admin/product-details/${product._id}`)}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-colors cursor-pointer"
+                >
+                  {/* Product Image */}
                   <TableCell>
-                    <Avatar>
-                      <AdvancedImage cldImg={createOptimizedImage(product?.images?.[0]?.url)}/>
-                      <AvatarFallback>Icon</AvatarFallback>
+                    <Avatar className="w-12 h-12 border border-gray-200 dark:border-gray-700">
+                      {product?.images?.[0]?.url ? (
+                        <AdvancedImage
+                          cldImg={createOptimizedImage(product.images[0].url)}
+                          className="object-cover w-full h-full rounded-full"
+                        />
+                      ) : (
+                        <AvatarFallback className="text-sm bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400">
+                          N/A
+                        </AvatarFallback>
+                      )}
                     </Avatar>
                   </TableCell>
-                  <TableCell>{product?.product_name}</TableCell>
-                  <TableCell>{product?.quantity}</TableCell>
-                  <TableCell>{product?.category_id?.category_name}</TableCell>
-                  <TableCell className="text-right">
+
+                  {/* Product Name */}
+                  <TableCell className="font-medium text-gray-800 dark:text-gray-100">
+                    {product?.product_name || "Unnamed Product"}
+                  </TableCell>
+
+                  {/* Quantity */}
+                  <TableCell className="text-gray-600 dark:text-gray-300">
+                    {product?.quantity ?? 0}
+                  </TableCell>
+
+                  {/* Category */}
+                  <TableCell className="text-gray-600 dark:text-gray-300">
+                    {product?.category_id?.category_name || "Uncategorized"}
+                  </TableCell>
+
+                  {/* Price */}
+                  <TableCell className="text-right font-semibold text-gray-800 dark:text-gray-100">
                     ₹{product?.price?.toLocaleString("en-IN")}
                   </TableCell>
                 </TableRow>
-              ))}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={5}
+                  className="text-center py-6 text-gray-500 dark:text-gray-400"
+                >
+                  No products found.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>

@@ -23,7 +23,7 @@ import { useEffect } from "react";
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 
 export default function AdminLayout() {
-  const { userData, isLoading } = useAppSelector((state) => state.user);
+  const { isLoading } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
   const location = useLocation();
   const navData = useAdminav();
@@ -35,8 +35,10 @@ export default function AdminLayout() {
 
   if (isLoading) return <ReactLoadingComp />;
 
-  if (!isLoading && userData && userData?.role !== "admin")
-    return <Navigate to="/" replace />;
+  const isAdmin = window.localStorage.getItem("isAdmin");
+
+  if (isAdmin !== "true")
+    return <Navigate to="/authentication" replace />;
 
   // Find current section and item from useAdminav
   let currentSection, currentItem;
