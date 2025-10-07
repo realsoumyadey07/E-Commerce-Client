@@ -37,7 +37,7 @@ export default function UserComponent() {
   return (
     <div className="cursor-pointer">
       {userData ? (
-        <DropdownMenu>
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <User className="w-6 h-6 hover:text-black" />
           </DropdownMenuTrigger>
