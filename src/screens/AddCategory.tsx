@@ -92,7 +92,7 @@ export default function AddCategory() {
   };
 
   return (
-    <div className="flex justify-center w-full bg-gray-50 p-4 overflow-auto py-10">
+    <div className="flex justify-center w-full bg-gray-50 px-4 overflow-auto md:py-10">
       <div className="w-full max-w-2xl rounded-2xl">
         <header className="my-5">
           <h1 className="text-2xl font-semibold">Add New Category</h1>

@@ -15,6 +15,7 @@ import {
 import { useAppSelector } from "@/hooks/useAppSelector";
 import toast from "react-hot-toast";
 import { FaFacebook, FaGoogle, FaInstagram } from "react-icons/fa";
+import { Spinner } from "@/components/ui/spinner";
 
 const loginSchema = yup
   .object({
@@ -150,6 +151,7 @@ export default function Onboarding() {
                   className="p-5 text-md bg-gray-800 text-white rounded-[5px] font-semibold z-10"
                   disabled={isLoading}
                 >
+                  {isLoading && <Spinner/>}
                   {isLoading ? "Logging in..." : "Login"}
                 </Button>
                 <span>

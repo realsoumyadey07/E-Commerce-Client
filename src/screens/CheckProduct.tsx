@@ -31,7 +31,7 @@ export default function CheckProduct() {
 
 
   return (
-    <div className="p-6 w-full">
+    <div className="px-6 w-full">
       <section className="w-full md:w-1/3 flex items-center relative mb-6">
         <Search className="absolute left-3 text-gray-400" size={20} />
         <Input

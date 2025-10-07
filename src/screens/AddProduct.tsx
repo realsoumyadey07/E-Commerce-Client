@@ -122,7 +122,7 @@ export default function AddProduct() {
   if (isLoading) return null;
 
   return (
-    <div className="flex justify-center w-full bg-gray-50 overflow-auto p-4 py-10">
+    <div className="flex justify-center w-full bg-gray-50 overflow-auto px-4 md:py-10">
       <div className="w-full max-w-2xl rounded-2xl">
         <header className="my-5">
           <h1 className="text-2xl font-semibold">Add New Product</h1>
