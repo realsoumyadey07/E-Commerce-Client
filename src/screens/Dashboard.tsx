@@ -169,7 +169,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="p-6 space-y-4 bg-gray-50 min-h-screen w-full overflow-y-auto">
+    <div className="px-6 space-y-4 bg-gray-50 min-h-screen w-full overflow-y-auto">
       <div>
         <h1 className="font-semibold text-xl">Dashboard</h1>
       </div>
