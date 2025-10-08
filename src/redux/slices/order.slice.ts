@@ -6,7 +6,10 @@ import tokenApi from "@/lib/axios/tokenApi";
 export interface Order {
   _id: string;
   userId: {
-    name: string
+    _id: string;
+    name: string;
+    email?: string;
+    role?: "admin" | "user";
   };
   products: {
     productId: Product;
@@ -17,7 +20,20 @@ export interface Order {
   status: "pending" | "shipped" | "delivered" | "paid" | "cancelled";
   paymentMethod: "cod" | "card" | "upi";
   paymentId?: string;
-  shippingAddress: string;
+  addressId: {
+    _id: string;
+    userId: string;
+    name: string;
+    phoneNumber?: string;
+    pincode?: string;
+    locality?: string;
+    area?: string;
+    city?: string;
+    district?: string;
+    state?: string;
+    landmark?: string;
+    addressType?: "home" | "work";
+  };
   createdAt: string;
   updatedAt: string;
 }
@@ -25,18 +41,22 @@ export interface Order {
 interface OrderState {
   allOrders: Order[] | null;
   allOredrsForAdmin: Order[] | null;
+  orderDetailsForAdmin: Order | null;
   order: Order | null;
   isLoading: boolean;
   isAllOrdersForAdminLoading: boolean;
+  isOrderDetailsForAdminLoading: boolean;
   error: unknown | null;
 }
 
 const initialState: OrderState = {
   allOrders: null,
   allOredrsForAdmin: null,
+  orderDetailsForAdmin: null,
   order: null,
   isLoading: false,
   isAllOrdersForAdminLoading: false,
+  isOrderDetailsForAdminLoading: false,
   error: null,
 };
 
@@ -79,19 +99,38 @@ export const getMyOrders = createAsyncThunk(
   }
 );
 
+export const getOrderDetails = createAsyncThunk(
+  "order/getOrderDetails",
+  async (orderId: string, thunkAPI) => {
+    try {
+      const res = await tokenApi.get(`/order/order-details/${orderId}`);
+      return res?.data?.orderDetails;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while fetching order details"
+      );
+    }
+  }
+);
+
 //for admin
-export const getAllOrders = createAsyncThunk("order/getAllOrders", async(_, thunkAPI)=> {
-  try {
-    const res = await tokenApi.get("/order/all-orders");
-    return res?.data?.orders;
-  } catch (error) {
-    const err = error as AxiosError<{ message: string }>;
+export const getAllOrders = createAsyncThunk(
+  "order/getAllOrders",
+  async (_, thunkAPI) => {
+    try {
+      const res = await tokenApi.get("/order/all-orders");
+      return res?.data?.orders;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
       return thunkAPI.rejectWithValue(
         err?.response?.data?.message ||
           "Something went wrong while fetching all orders"
       );
+    }
   }
-})
+);
 
 const orderSlice = createSlice({
   name: "order",
@@ -124,8 +163,22 @@ const orderSlice = createSlice({
       state.error = action?.payload;
       state.isLoading = false;
     });
+    // get order details
+    builder.addCase(getOrderDetails.pending, (state) => {
+      state.isOrderDetailsForAdminLoading = true;
+      state.orderDetailsForAdmin = null;
+      state.error = null;
+    });
+    builder.addCase(getOrderDetails.fulfilled, (state, action) => {
+      state.orderDetailsForAdmin = action?.payload as Order;
+      state.isOrderDetailsForAdminLoading = false;
+    });
+    builder.addCase(getOrderDetails.rejected, (state, action) => {
+      state.error = action?.payload;
+      state.isOrderDetailsForAdminLoading = false;
+    });
     // for admin
-    //get all orders
+    // get all orders
     builder.addCase(getAllOrders.pending, (state) => {
       state.isAllOrdersForAdminLoading = true;
       state.error = null;

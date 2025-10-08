@@ -33,7 +33,7 @@ export default function CheckCategory() {
   }, [dispatch]);
 
   return (
-    <div className="px-6 py-8 w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 min-h-screen transition-colors">
+    <div className="px-6 md:py-8 w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 min-h-screen transition-colors">
       <header className="mb-8">
         <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 tracking-tight mb-2">
           Category Management
@@ -45,7 +45,10 @@ export default function CheckCategory() {
 
       {/* Search Bar */}
       <section className="w-full md:w-1/3 flex items-center relative mb-6">
-        <Search className="absolute left-3 text-gray-400 dark:text-gray-500" size={20} />
+        <Search
+          className="absolute left-3 text-gray-400 dark:text-gray-500"
+          size={20}
+        />
         <Input
           type="text"
           placeholder="Search category..."
@@ -64,27 +67,28 @@ export default function CheckCategory() {
 
       {/* Table */}
       <div className="overflow-x-auto rounded shadow border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <Table className="min-w-full">
-          <TableCaption className="text-gray-500 dark:text-gray-400">
+        <Table className="min-w-full border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden">
+          <TableCaption className="text-gray-500 dark:text-gray-400 mt-2">
             {categories && categories.length > 0
               ? "A list of your available categories."
               : "No category found."}
           </TableCaption>
+
           <TableHeader>
             <TableRow className="bg-gray-100 dark:bg-gray-800">
-              <TableHead className="w-[120px] font-semibold text-gray-700 dark:text-gray-300">
+              <TableHead className="w-[140px] font-semibold text-gray-700 dark:text-gray-300 py-3">
                 Name
               </TableHead>
-              <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+              <TableHead className="font-semibold text-gray-700 dark:text-gray-300 text-center py-3">
                 Image 1
               </TableHead>
-              <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+              <TableHead className="font-semibold text-gray-700 dark:text-gray-300 text-center py-3">
                 Image 2
               </TableHead>
-              <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+              <TableHead className="font-semibold text-gray-700 dark:text-gray-300 text-center py-3">
                 Image 3
               </TableHead>
-              <TableHead className="font-semibold text-gray-700 dark:text-gray-300">
+              <TableHead className="font-semibold text-gray-700 dark:text-gray-300 text-center py-3">
                 Image 4
               </TableHead>
             </TableRow>
@@ -95,21 +99,25 @@ export default function CheckCategory() {
               categories.map((category) => (
                 <TableRow
                   key={category._id}
-                  onClick={() => navigate(`/admin/category-details/${category._id}`)}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-colors cursor-pointer"
+                  onClick={() =>
+                    navigate(`/admin/category-details/${category._id}`)
+                  }
+                  className="hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer"
                 >
                   {/* Category Name */}
-                  <TableCell className="font-medium text-gray-800 dark:text-gray-100">
+                  <TableCell className="font-medium text-gray-800 dark:text-gray-100 py-4">
                     {category?.category_name}
                   </TableCell>
 
                   {/* Category Images */}
                   {Array.from({ length: 4 }).map((_, idx) => {
                     const img = category?.category_images?.[idx];
-                    const optimizedImg = img ? createOptimizedImage(img.url) : null;
+                    const optimizedImg = img
+                      ? createOptimizedImage(img.url)
+                      : null;
                     return (
-                      <TableCell key={idx}>
-                        <Avatar className="w-12 h-12 border border-gray-200 dark:border-gray-700">
+                      <TableCell key={idx} className="text-center">
+                        <Avatar className="w-10 h-10 mx-auto border border-gray-200 dark:border-gray-700">
                           {optimizedImg ? (
                             <AdvancedImage
                               cldImg={optimizedImg}

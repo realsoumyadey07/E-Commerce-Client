@@ -1,7 +1,7 @@
-export default function UserScreen(){
-    return (
-        <div >
-            
-        </div>
-    )
+
+
+export default function UserScreen() {
+  return (
+    <div>user screen</div>
+  );
 }

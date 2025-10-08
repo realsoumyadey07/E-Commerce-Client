@@ -2,6 +2,9 @@ import AdminLayout from "@/layout/Admin";
 import PublicLayout from "@/layout/Public";
 import AddCategory from "@/screens/AddCategory";
 import AddProduct from "@/screens/AddProduct";
+import AdminOrderDetails from "@/screens/AdminOrderDetails";
+import AdminProductDetails from "@/screens/AdminProductDetails";
+import AdminUserScreen from "@/screens/AdminUserScreen";
 import CartScreen from "@/screens/CartScreen";
 import CategoryDetails from "@/screens/CategoryDetails";
 import CategorySpecificScreen from "@/screens/CategorySpecificScreen";
@@ -33,25 +36,41 @@ export default function Navigation() {
           <Route path="/wishlist" element={<WishlistScreen />} />
           <Route path="/search" element={<SearchScreen />} />
           <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/orders" element={<OrderScreen/>} />
-          <Route path="/user" element={<UserScreen/>} />
-          <Route path="/checkout/:id" element={<CheckoutScreen/>} />
+          <Route path="/orders" element={<OrderScreen />} />
+          <Route path="/user" element={<UserScreen />} />
+          <Route path="/checkout/:id" element={<CheckoutScreen />} />
 
-          <Route path="/:category/products"  element={<CategorySpecificScreen/>} />
+          <Route
+            path="/:category/products"
+            element={<CategorySpecificScreen />}
+          />
         </Route>
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Dashboard />} />
+          {/* admin user */}
+          <Route path="/admin-user/:id" element={<AdminUserScreen />} />
+
           {/* order section */}
           <Route path="/admin/check-order" element={<CheckOrder />} />
+          <Route
+            path="/admin/order-details/:id"
+            element={<AdminOrderDetails />}
+          />
           {/* category section */}
-          <Route path="/admin/add-category" element={<AddCategory/>} />
-          <Route path="/admin/check-category" element={<CheckCategory/>} />
-          <Route path="/admin/category-details/:id" element={<CategoryDetails/>} />
-          <Route path="/admin/edit-category/:id" element={<EditCategory/>} />
+          <Route path="/admin/add-category" element={<AddCategory />} />
+          <Route path="/admin/check-category" element={<CheckCategory />} />
+          <Route
+            path="/admin/category-details/:id"
+            element={<CategoryDetails />}
+          />
+          <Route path="/admin/edit-category/:id" element={<EditCategory />} />
           {/* product section */}
           <Route path="/admin/add-product" element={<AddProduct />} />
           <Route path="/admin/check-product" element={<CheckProduct />} />
-          <Route path="/admin/product-details/:id" element={<ProductDetails />} />
+          <Route
+            path="/admin/product-details/:id"
+            element={<AdminProductDetails />}
+          />
           <Route path="/admin/edit-product/:id" element={<EditProduct />} />
         </Route>
         <Route path="*" element={<NotFound />} />

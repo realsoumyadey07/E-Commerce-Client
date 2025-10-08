@@ -30,7 +30,7 @@ export default function CheckProduct() {
   }, [dispatch]);
 
   return (
-    <div className="px-6 py-8 w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 min-h-screen transition-colors">
+    <div className="px-6 md:py-8 w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 min-h-screen transition-colors">
       {/* Header */}
       <header className="mb-8">
         <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 tracking-tight mb-2">
@@ -100,7 +100,7 @@ export default function CheckProduct() {
                 >
                   {/* Product Image */}
                   <TableCell>
-                    <Avatar className="w-12 h-12 border border-gray-200 dark:border-gray-700">
+                    <Avatar className="w-10 h-10 border border-gray-200 dark:border-gray-700">
                       {product?.images?.[0]?.url ? (
                         <AdvancedImage
                           cldImg={createOptimizedImage(product.images[0].url)}
@@ -115,7 +115,7 @@ export default function CheckProduct() {
                   </TableCell>
 
                   {/* Product Name */}
-                  <TableCell className="font-medium text-gray-800 dark:text-gray-100">
+                  <TableCell className="font-medium text-gray-600 dark:text-gray-100">
                     {product?.product_name || "Unnamed Product"}
                   </TableCell>
 
