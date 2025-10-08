@@ -14,9 +14,11 @@ import { useAppSelector } from "@/hooks/useAppSelector";
 import { getAllOrders } from "@/redux/slices/order.slice";
 import { Search } from "lucide-react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function CheckOrder() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { isLoading, allOredrsForAdmin } = useAppSelector(
     (state) => state.order
   );
@@ -28,7 +30,7 @@ export default function CheckOrder() {
   if (isLoading) return <LoadingComp />;
 
   return (
-    <div className="px-6 py-8 w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 min-h-screen transition-colors">
+    <div className="px-6 md:py-8 w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 min-h-screen transition-colors">
       <header className="mb-8">
         <h1 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 tracking-tight mb-2">
           Orders Overview
@@ -69,7 +71,8 @@ export default function CheckOrder() {
               allOredrsForAdmin.map((order) => (
                 <TableRow
                   key={order._id}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-colors"
+                  className="hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-colors cursor-pointer"
+                  onClick={()=> navigate(`/admin/order-details/${order._id}`)}
                 >
                   <TableCell className="font-medium text-gray-800 dark:text-gray-100">
                     {order.userId?.name || "Unknown"}
