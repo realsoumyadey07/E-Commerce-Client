@@ -1,5 +1,5 @@
-import LoadingComp from "@/components/LoadingComp";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -27,7 +27,7 @@ export default function CheckOrder() {
     dispatch(getAllOrders());
   }, [dispatch]);
 
-  if (isLoading) return <LoadingComp />;
+  if (isLoading) return <CheckOrderSkeleton />;
 
   return (
     <div className="px-6 md:py-8 w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 min-h-screen transition-colors">
@@ -120,4 +120,45 @@ export default function CheckOrder() {
       </div>
     </div>
   );
+}
+
+function CheckOrderSkeleton(){
+  return (
+    <div className="px-6 md:py-8 w-full bg-gradient-to-b from-white to-gray-50 dark:from-gray-950 dark:to-gray-900 min-h-screen transition-colors">
+      <header className="mb-8 space-y-2">
+        <Skeleton className="h-6 w-40" />
+        <Skeleton className="h-4 w-72" />
+      </header>
+
+      <section className="w-full md:w-1/3 flex items-center relative mb-6">
+        <Skeleton className="absolute left-3 h-5 w-5 rounded-full" />
+        <Skeleton className="h-10 w-full rounded-md" />
+      </section>
+
+      <div className="overflow-x-auto rounded shadow border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+        <div className="grid grid-cols-5 gap-4 bg-gray-100 dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} className="h-4 w-20" />
+          ))}
+        </div>
+
+        <div className="divide-y divide-gray-200 dark:divide-gray-800">
+          {[...Array(6)].map((_, idx) => (
+            <div
+              key={idx}
+              className="grid grid-cols-5 gap-4 items-center p-4 hover:bg-gray-50 dark:hover:bg-gray-800/70 transition-colors"
+            >
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-48" />
+              <Skeleton className="h-5 w-16 rounded-full" />
+              <Skeleton className="h-4 w-24" />
+              <div className="flex justify-end">
+                <Skeleton className="h-4 w-20" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }

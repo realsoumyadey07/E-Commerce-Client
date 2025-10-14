@@ -93,7 +93,12 @@ export default function AdminOrderDetails() {
 
           {/* Customer & Address */}
           <div className="grid md:grid-cols-2 gap-4">
-            <Card onClick={()=> navigate(`/admin-user/${orderDetailsForAdmin.userId._id}`)} className="cursor-pointer"> 
+            <Card
+              onClick={() =>
+                navigate(`/get-user/${orderDetailsForAdmin.userId._id}`)
+              }
+              className="cursor-pointer"
+            >
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="w-5 h-5" /> Customer Details
@@ -166,7 +171,11 @@ export default function AdminOrderDetails() {
                     <TableRow
                       key={product.productId._id}
                       className="hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors cursor-pointer"
-                      onClick={()=> navigate(`/admin/product-details/${product.productId._id}`)}
+                      onClick={() =>
+                        navigate(
+                          `/admin/product-details/${product.productId._id}`
+                        )
+                      }
                     >
                       <TableCell className="py-3">
                         <Avatar className="w-10 h-10 border border-gray-200 dark:border-gray-700">
