@@ -122,7 +122,7 @@ export default function AddProduct() {
   if (isLoading) return null;
 
   return (
-    <div className="flex justify-center w-full bg-gray-50 overflow-auto px-4 md:py-8 py-4">
+    <div className="flex justify-center w-full bg-white overflow-auto px-4 md:py-8 py-4">
       <div className="w-full max-w-2xl rounded-2xl">
         <header className="my-5">
           <h1 className="text-2xl font-semibold">Add New Product</h1>
@@ -133,7 +133,6 @@ export default function AddProduct() {
             onSubmit={handleSubmit(handleCreateProduct)}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Product Name */}
               <div className="flex flex-col space-y-2 md:col-span-2">
                 <label
                   htmlFor="product_name"
@@ -153,7 +152,6 @@ export default function AddProduct() {
                   </span>
                 )}
               </div>
-              {/* Category */}
               <div className="flex flex-col space-y-2 md:col-span-2">
                 <label className="text-sm font-medium text-gray-700">
                   Category
@@ -186,7 +184,6 @@ export default function AddProduct() {
                   </span>
                 )}
               </div>
-              {/* Price */}
               <div className="flex flex-col space-y-2">
                 <label
                   htmlFor="price"
@@ -209,7 +206,6 @@ export default function AddProduct() {
                   </span>
                 )}
               </div>
-              {/* Quantity */}
               <div className="flex flex-col space-y-2">
                 <label
                   htmlFor="quantity"
@@ -232,7 +228,6 @@ export default function AddProduct() {
                   </span>
                 )}
               </div>
-              {/* Description */}
               <div className="flex flex-col space-y-2 md:col-span-2">
                 <label
                   htmlFor="description"
@@ -252,7 +247,6 @@ export default function AddProduct() {
                   </span>
                 )}
               </div>
-              {/* Images */}
               {imageFields.map((fieldName, idx) => (
                 <div
                   className="flex flex-col space-y-2 md:col-span-1"
@@ -288,7 +282,6 @@ export default function AddProduct() {
                       {String(errors[fieldName]?.message)}
                     </span>
                   )}
-                  {/* Preview */}
                   {previews[fieldName] && (
                     <img
                       src={previews[fieldName] as string}
@@ -300,7 +293,6 @@ export default function AddProduct() {
                 </div>
               ))}
             </div>
-            {/* Modal for full image preview */}
             {selectedImage && (
               <div
                 className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"

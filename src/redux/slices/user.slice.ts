@@ -2,6 +2,7 @@ import openApi from "@/lib/axios/openApi";
 import tokenApi from "@/lib/axios/tokenApi";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { AxiosError } from "axios";
+import type { Product } from "./product.slice";
 
 export interface User {
   _id: string;
@@ -13,11 +14,44 @@ export interface User {
   __v: number;
 }
 
+interface UserForAdmin extends User {
+  address?: {
+    userId: string;
+    name: string;
+    phoneNumber: string;
+    pincode: string;
+    locality: string;
+    area: string;
+    city: string;
+    district: string;
+    state: string;
+    landmark: string;
+    addressType: "home" | "work";
+  },
+  orders?: {
+    _id: string;
+    products: {
+      productId: Product[];
+      quantity: number;
+      price: number;
+      _id: string;
+    }[];
+    totalAmount: number;
+    status: "pending" | "shipped" | "paid" | "delivered" | "cancelled";
+    paymentMethod: "cod" | "card" | "upi";
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  }[]
+}
+
 interface UserSlice {
   registerUserData: User | null;
   loginUserData: User | null;
   userData: User | null;
+  userDetailsForAdmin: UserForAdmin | null;
   isLoading: boolean;
+  isUserDetailsForAdminLoading: boolean;
   error: unknown | null;
 }
 
@@ -25,7 +59,9 @@ const initialState: UserSlice = {
   registerUserData: null,
   loginUserData: null,
   userData: null,
+  userDetailsForAdmin: null,
   isLoading: false,
+  isUserDetailsForAdminLoading: false,
   error: null,
 };
 
@@ -83,8 +119,8 @@ export const userLogout = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const res = await tokenApi.get("/user/user-logout");
-      if(res?.data?.user?.role === "admin") {
-        window.localStorage.removeItem("isAdmin")
+      if (res?.data?.user?.role === "admin") {
+        window.localStorage.removeItem("isAdmin");
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
@@ -106,6 +142,23 @@ export const userProfile = createAsyncThunk(
       return thunkAPI.rejectWithValue(
         err?.response?.data?.message ||
           "Something went wrong while getting user profile"
+      );
+    }
+  }
+);
+
+//for admin
+export const getUserProfileById = createAsyncThunk(
+  "user/getUserProfileById",
+  async (userId: string, thunkAPI) => {
+    try {
+      const res = await tokenApi.get(`/user/get-user/${userId}`);
+      return res?.data?.user;
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      return thunkAPI.rejectWithValue(
+        err?.response?.data?.message ||
+          "Something went wrong while getting user data by id"
       );
     }
   }
@@ -176,6 +229,21 @@ export const userSlice = createSlice({
     builder.addCase(userProfile.rejected, (state, action) => {
       state.error = action?.payload;
       state.isLoading = false;
+    });
+    // for admin
+    // get user details by id
+    builder.addCase(getUserProfileById.pending, (state) => {
+      state.isUserDetailsForAdminLoading = true;
+      state.error = null;
+    });
+    builder.addCase(getUserProfileById.fulfilled, (state, action) => {
+      state.userDetailsForAdmin = action?.payload;
+      state.error = null;
+      state.isUserDetailsForAdminLoading = false;
+    });
+    builder.addCase(getUserProfileById.rejected, (state, action) => {
+      state.error = action?.payload;
+      state.isUserDetailsForAdminLoading = false;
     });
   },
 });

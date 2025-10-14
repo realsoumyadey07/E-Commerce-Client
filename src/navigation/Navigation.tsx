@@ -48,7 +48,7 @@ export default function Navigation() {
         <Route element={<AdminLayout />}>
           <Route path="/admin" element={<Dashboard />} />
           {/* admin user */}
-          <Route path="/admin-user/:id" element={<AdminUserScreen />} />
+          <Route path="/get-user/:id" element={<AdminUserScreen />} />
 
           {/* order section */}
           <Route path="/admin/check-order" element={<CheckOrder />} />
